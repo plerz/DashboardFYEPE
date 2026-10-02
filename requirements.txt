@@ -1,0 +1,6 @@
+Flask>=3.0,<4
+requests>=2.31,<3
+gunicorn>=22,<24
+psycopg2-binary>=2.9,<3
+
+Pillow
