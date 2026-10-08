@@ -1,0 +1,12 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>Scheduled Posts - DashboardFYEPE</title>
+<style>body{font-family:Arial;background:#f4f7fb;color:#071b34;margin:0}.wrap{max-width:1200px;margin:30px auto;padding:20px}
+.card{background:white;border-radius:16px;padding:25px}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:14px;border-bottom:1px solid #e4eaf1}
+.badge{padding:6px 10px;background:#eef4ff;border-radius:999px}button{background:#e53935;color:white;border:0;padding:9px 12px;border-radius:8px}
+a{color:#146cf6;text-decoration:none;font-weight:700}</style></head><body><div class="wrap"><div class="card">
+<h1>Scheduled Posts</h1><p><a href="/">← Dashboard</a></p>
+<table><thead><tr><th>Akun</th><th>Jenis</th><th>Tanggal & Jam</th><th>Status</th><th>Aksi</th></tr></thead><tbody>
+{% for s in schedules %}<tr><td>{{ s["display_name"] or s["open_id"] }}</td><td>{{ s["post_type"] }}</td><td>{{ s["scheduled_at"] }}</td>
+<td><span class="badge">{{ s["status"] }}</span></td><td><form method="post" action="{{ url_for('delete_schedule',schedule_id=s['id']) }}" onsubmit="return confirm('Hapus scheduled post ini?')"><button>Hapus</button></form></td></tr>
+{% else %}<tr><td colspan="5">Belum ada scheduled post.</td></tr>{% endfor %}
+</tbody></table></div></div></body></html>

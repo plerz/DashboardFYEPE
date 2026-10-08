@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Publish Status • DashboardFYEPE</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f4f7fb;color:#071b38;margin:0;padding:40px}
+.card{max-width:850px;margin:auto;background:#fff;border:1px solid #dce4ee;border-radius:18px;padding:34px}
+.badge{display:inline-block;background:#eef5ff;padding:10px 14px;border-radius:999px;font-weight:700}
+pre{white-space:pre-wrap;word-break:break-word;background:#f6f8fb;padding:18px;border-radius:12px}
+a{display:inline-block;margin-right:10px;margin-top:20px;background:#1f6fff;color:#fff;text-decoration:none;padding:13px 18px;border-radius:10px}
+</style>
+</head>
+<body>
+<div class="card">
+<h1>TikTok Publish Status</h1>
+<p>Account: <strong>{{ account['display_name'] }}</strong></p>
+<p>Publish ID: <code>{{ publish_id }}</code></p>
+<p>Status: <span class="badge">{{ status }}</span></p>
+<pre>{{ result | tojson(indent=2) }}</pre>
+<a href="{{ url_for('publish_status', open_id=account['open_id'], publish_id=publish_id) }}">Check Status Again</a>
+<a href="{{ url_for('create_post', open_id=account['open_id']) }}">Create Another Post</a>
+<a href="/">Dashboard</a>
+</div>
+</body>
+</html>
