@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Create Post • DashboardFYEPE</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#071b38}
+.shell{display:flex;min-height:100vh}.side{width:300px;background:#06182c;color:white;padding:42px 28px}
+.brand{font-size:32px;font-weight:800}.sub{margin-left:34px}.back{display:block;margin-top:50px;color:#fff;text-decoration:none;background:#1f6fff;padding:14px 18px;border-radius:12px}
+.main{flex:1;padding:48px 6%}.card{max-width:1080px;background:white;border:1px solid #dce4ee;border-radius:18px;padding:34px;box-shadow:0 8px 30px rgba(7,27,56,.05)}
+h1{font-size:38px;margin:0 0 24px}.connected{font-size:20px;margin-bottom:28px}
+label.title{display:block;font-weight:700;font-size:20px;margin:24px 0 10px}
+input[type=file],textarea,select{width:100%;border:1px solid #cfd9e6;border-radius:12px;padding:16px;font-size:16px;background:white}
+textarea{height:145px;resize:vertical}.hint{color:#637083;margin-top:8px}.error{background:#ffe7e7;color:#8b1010;padding:14px;border-radius:10px;margin:16px 0}
+.options{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px}.opt{border:1px solid #d5deea;border-radius:12px;padding:14px 16px;min-width:180px}
+.consent{margin-top:24px;padding:16px;background:#fff6d8;border-radius:12px;line-height:1.5}
+button{margin-top:22px;border:0;border-radius:12px;background:#1f6fff;color:white;font-size:18px;font-weight:700;padding:16px 28px;cursor:pointer}
+button:disabled{background:#a9b0ba;cursor:not-allowed}.private{margin-top:16px;background:#eef5ff;padding:14px;border-radius:10px}
+@media(max-width:800px){.side{display:none}.main{padding:20px}.card{padding:22px}}
+
+/* V2.1 layout fix: consent box and publish button */
+.consent{
+    box-sizing:border-box !important;
+    margin-top:24px !important;
+    padding:18px 20px !important;
+    background:#fff6d8 !important;
+    border-radius:12px !important;
+    line-height:1.5 !important;
+    display:flex !important;
+    align-items:flex-start !important;
+    gap:12px !important;
+    width:100% !important;
+    min-height:64px !important;
+    white-space:normal !important;
+    overflow:visible !important;
+    float:none !important;
+    position:relative !important;
+}
+.consent input[type="checkbox"]{
+    width:18px !important;
+    height:18px !important;
+    margin:4px 0 0 0 !important;
+    flex:0 0 18px !important;
+}
+.consent span{
+    display:block !important;
+    flex:1 1 auto !important;
+    min-width:0 !important;
+    line-height:1.5 !important;
+    white-space:normal !important;
+    overflow-wrap:anywhere !important;
+}
+#publishBtn{
+    display:block !important;
+    margin-top:24px !important;
+    clear:both !important;
+}
+
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <div class="brand">♪ DashboardFYEPE</div>
+    <div class="sub">Posting Manager</div>
+    <a class="back" href="/">← Dashboard</a>
+  </aside>
+  <main class="main">
+    <div class="card">
+      <h1>Create Post</h1>
+      <div class="connected">Connected as <strong>{{ account['display_name'] }}</strong></div>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+          <div class="error">{{ message }}</div>
+        {% endfor %}
+      {% endwith %}
+
+      {% if api_error and api_error.get('code') not in [None, '', 'ok'] %}
+        <div class="error">
+          Creator Info error: {{ api_error.get('code') }} — {{ api_error.get('message','') }}
+        </div>
+      {% endif %}
+
+      <form id="postForm" method="post" enctype="multipart/form-data">
+        <label class="title">Video file</label>
+        <input id="video" name="video" type="file" accept="video/mp4,video/quicktime,video/webm,.mp4,.mov,.webm" required>
+        <div class="hint">MP4, MOV, atau WEBM • maksimum {{ max_upload_mb }} MB pada DashboardFYEPE V2.</div>
+
+        <label class="title" for="caption">Caption</label>
+        <textarea id="caption" name="caption" maxlength="2200" placeholder="Write a caption..."></textarea>
+        <div class="hint"><span id="count">0</span>/2200</div>
+
+        <label class="title" for="privacy">Privacy</label>
+        <select id="privacy" name="privacy_level" required>
+          <option value="" selected disabled>Choose privacy…</option>
+          {% for p in creator.get('privacy_level_options', []) %}
+            <option value="{{ p }}">
+              {% if p == 'PUBLIC_TO_EVERYONE' %}Everyone
+              {% elif p == 'FOLLOWER_OF_CREATOR' %}Followers
+              {% elif p == 'MUTUAL_FOLLOW_FRIENDS' %}Friends / mutual followers
+              {% elif p == 'SELF_ONLY' %}Only me
+              {% else %}{{ p }}{% endif %}
+            </option>
+          {% endfor %}
+        </select>
+
+        {% if 'SELF_ONLY' in creator.get('privacy_level_options', []) %}
+          <div class="private">Sandbox/unaudited Direct Post dapat dibatasi TikTok ke private viewing. Untuk pengujian, gunakan pilihan yang memang tersedia dari Creator Info akun ini.</div>
+        {% endif %}
+
+        <label class="title">Interactions</label>
+        <div class="options">
+          <label class="opt">
+            <input type="checkbox" name="allow_comment" value="yes"
+              {% if creator.get('comment_disabled') %}disabled{% endif %}>
+            Allow comments
+            {% if creator.get('comment_disabled') %}<div class="hint">Unavailable for this account</div>{% endif %}
+          </label>
+          <label class="opt">
+            <input type="checkbox" name="allow_duet" value="yes"
+              {% if creator.get('duet_disabled') %}disabled{% endif %}>
+            Allow Duet
+            {% if creator.get('duet_disabled') %}<div class="hint">Unavailable for this account</div>{% endif %}
+          </label>
+          <label class="opt">
+            <input type="checkbox" name="allow_stitch" value="yes"
+              {% if creator.get('stitch_disabled') %}disabled{% endif %}>
+            Allow Stitch
+            {% if creator.get('stitch_disabled') %}<div class="hint">Unavailable for this account</div>{% endif %}
+          </label>
+        </div>
+
+        {% if creator.get('max_video_post_duration_sec') %}
+          <div class="hint" style="margin-top:14px">TikTok reports a maximum post duration of {{ creator.get('max_video_post_duration_sec') }} seconds for this creator.</div>
+        {% endif %}
+
+        <label class="consent">
+          <input id="consent" type="checkbox" name="consent" value="yes">
+  <span>I confirm that I want DashboardFYEPE to send this selected video and post settings to my connected TikTok account.</span>
+</label>
+
+        <button id="publish" type="submit" disabled>Publish to TikTok</button>
+      <div style="margin:20px 0;padding:15px;border:1px solid #d4deea;border-radius:12px">
+<h3>Waktu Posting</h3>
+<label><input type="radio" name="publish_when" value="now" checked onclick="document.getElementById('videoSchedule').style.display='none'"> Posting sekarang</label>
+&nbsp;&nbsp;<label><input type="radio" name="publish_when" value="scheduled" onclick="document.getElementById('videoSchedule').style.display='block'"> Scheduled post</label>
+<div id="videoSchedule" style="display:none;margin-top:12px">
+<input type="date" name="schedule_date"> <input type="time" name="schedule_time">
+</div></div></form>
+    </div>
+  </main>
+</div>
+<script>
+const form = document.getElementById('postForm');
+const video = document.getElementById('video');
+const privacy = document.getElementById('privacy');
+const consent = document.getElementById('consent');
+const publish = document.getElementById('publish');
+const caption = document.getElementById('caption');
+const count = document.getElementById('count');
+
+function updateButton(){
+  publish.disabled = !(video.files.length && privacy.value && consent.checked);
+}
+video.addEventListener('change', updateButton);
+privacy.addEventListener('change', updateButton);
+consent.addEventListener('change', updateButton);
+caption.addEventListener('input', () => count.textContent = caption.value.length);
+
+form.addEventListener('submit', () => {
+  publish.disabled = true;
+  publish.textContent = 'Uploading to TikTok…';
+});
+</script>
+</body>
+</html>
