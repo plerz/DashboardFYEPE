@@ -1,0 +1,494 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DashFYEPE</title>
+<link rel="stylesheet" href="/static/style.css">
+<style>
+.account-cell{min-width:420px}.account-top{display:flex;gap:12px;align-items:flex-start}
+.account-no{font-weight:800;font-size:16px;min-width:24px;padding-top:9px}
+.account-main{flex:1}.account-name{display:flex;align-items:center;gap:10px}
+.account-name img{width:42px;height:42px;border-radius:50%;object-fit:cover;display:block;background:#eef2f6}.avatar-fallback{width:42px;height:42px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:#eef2f6;color:#175cd3;font-weight:800}
+.account-name a{font-size:17px;font-weight:800;color:#0b1d35;text-decoration:none}
+.account-name a:hover{text-decoration:underline;color:#1468ff}
+.stats-line{margin:7px 0 5px 52px;display:flex;flex-wrap:nowrap;gap:12px;font-size:13px;color:#44546a;white-space:nowrap}
+.stats-line b{color:#0b1d35}.email-line{margin-left:52px;font-size:13px;color:#667085}
+.email-line strong{color:#344054}.account-edit{margin:9px 0 0 52px;display:flex;gap:7px;flex-wrap:wrap}
+.account-edit input{height:31px;border:1px solid #d0d7e2;border-radius:7px;padding:0 9px;font-size:12px;max-width:180px}
+.mini-save,.mini-refresh{border:0;border-radius:7px;padding:7px 10px;font-weight:700;cursor:pointer}
+.mini-save{background:#0b6cff;color:white}.mini-refresh{background:#eef4ff;color:#175cd3}
+.muted{color:#98a2b3}.scope-box{width:155px;line-height:1.35;word-break:normal}.scope-line{display:block;white-space:nowrap}.action-stack{display:flex;flex-direction:column;gap:7px;min-width:118px}.smallbtn.photo{background:#7c3aed}.smallbtn.carousel{background:#0891b2}.deletebtn{border:0;border-radius:7px;padding:9px 12px;background:#fee2e2;color:#b42318;font-weight:700;cursor:pointer;text-align:left}table td{vertical-align:top}
+@media(max-width:900px){.account-cell{min-width:330px}.stats-line,.email-line,.account-edit{margin-left:0;margin-top:8px}}
+.account-edit-details{margin-left:62px;margin-top:8px}
+.account-edit-details summary{list-style:none}
+.account-edit-details summary::-webkit-details-marker{display:none}
+.mini-edit{display:inline-block;background:#fff4e8;color:#b54708;border:1px solid #fed7aa;border-radius:9px;padding:8px 13px;font-weight:700;cursor:pointer}
+.account-edit-details[open] .account-edit{margin-left:0;margin-top:8px}
+
+.account-actions-inline{margin-left:62px;margin-top:8px;display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap}
+.account-actions-inline .account-edit{margin:0;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.account-edit-details{margin:0!important}
+.account-edit-details .edit-expanded{margin-top:8px!important;position:absolute;z-index:5;background:#fff;padding:10px;border:1px solid #e2e8f0;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,.08)}
+.compact-btn{font-size:13px!important;line-height:1.1!important;padding:7px 10px!important;border-radius:8px!important;min-height:0!important;width:auto!important}
+.mini-edit{background:#fff4e8;color:#b54708;border:1px solid #fed7aa;font-weight:700;cursor:pointer}
+.refresh-inline{margin:0}
+.refresh-btn{border:0;background:#eef4ff;color:#0969da;font-weight:700;cursor:pointer}
+.actions .btn,.actions a.btn{width:148px;min-height:42px;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:700;border-radius:10px}
+.actions .btn-video{background:#246bfd;color:#fff}
+.actions .btn-photo{background:#7c3aed;color:#fff}
+.actions .btn-carousel{background:#1496b3;color:#fff}
+.actions .btn-unconnect{background:#ef4444!important;color:#fff!important;border:0!important}
+
+.account-stats-head{display:flex;align-items:center;justify-content:space-between;gap:14px;white-space:nowrap}
+.refresh-all-btn{border:0;background:#eef4ff;color:#175cd3;font-weight:700;font-size:12px;padding:7px 10px;border-radius:8px;cursor:pointer;white-space:nowrap}
+.refresh-all-btn:disabled{opacity:.65;cursor:wait}
+.stats-update-time{margin:7px 0 0 62px;color:#98a2b3;font-size:13px}
+.action-stack{min-width:155px!important;width:155px!important;gap:8px!important}
+.action-stack .smallbtn,.action-stack .deletebtn{box-sizing:border-box!important;width:155px!important;min-width:155px!important;max-width:155px!important;height:42px!important;min-height:42px!important;padding:0 10px!important;border-radius:10px!important;display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;white-space:nowrap!important;line-height:1!important;font-size:14px!important;font-weight:700!important;text-decoration:none!important}
+.action-stack .smallbtn{color:#fff!important}
+.action-stack .deletebtn{background:#ef4444!important;color:#fff!important;border:0!important;cursor:pointer!important}
+.action-stack form{margin:0!important;width:155px!important}
+@media(max-width:900px){.stats-update-time{margin-left:0}.account-stats-head{align-items:flex-start;flex-direction:column}}
+
+/* Compact dashboard rows */
+.action-stack{min-width:122px!important;width:122px!important;gap:5px!important}
+.action-stack .smallbtn,.action-stack .deletebtn{
+ box-sizing:border-box!important;width:122px!important;min-width:122px!important;max-width:122px!important;
+ height:32px!important;min-height:32px!important;padding:0 8px!important;border-radius:8px!important;
+ font-size:12px!important;line-height:1!important;white-space:nowrap!important;
+}
+.action-stack form{width:122px!important;margin:0!important}
+table td{padding-top:10px!important;padding-bottom:10px!important}
+.account-top{min-height:0!important}
+.stats-line{margin-top:4px!important;margin-bottom:3px!important}
+.account-actions-inline{margin-top:5px!important}
+.stats-update-time{margin-top:4px!important}
+
+.account-edit input[name="category"]{max-width:190px}
+.account-name{display:flex;align-items:center;width:100%}
+.category-top{margin-left:auto;margin-right:8px;font-size:14px;font-weight:400;font-style:italic;color:#475467;white-space:nowrap}
+
+.page-meta{display:block;color:#98a2b3;font-size:12px;margin-top:3px}
+.pagination{display:flex;justify-content:center;align-items:center;gap:16px;padding:18px 0 4px;color:#667085;font-size:13px}
+.pagination a{padding:8px 12px;border:1px solid #d0d5dd;border-radius:8px;text-decoration:none;color:#175cd3;background:#fff;font-weight:700}
+.pagination a:hover{background:#f2f4f7}
+.nav-connect,.nav-bulk{background:#10243c!important;color:#fff!important;border:1px solid #29425f}.nav-connect:hover,.nav-bulk:hover{background:#1769ff!important}.action{cursor:pointer;position:relative;z-index:2}.action.purple{background:#9b3cff!important;color:#fff!important}.action.pink{background:#ff2f75!important;color:#fff!important}.nav-connect{font-weight:800}.nav-bulk{font-weight:800}
+.admin-filter-bar{display:flex;align-items:center;gap:8px;margin-left:auto}
+.admin-filter-bar label{font-size:12px;color:#667085;font-weight:700}
+.admin-filter-bar select{height:36px;border:1px solid #d0d5dd;border-radius:8px;background:#fff;padding:0 34px 0 10px;font-size:13px;color:#101828;min-width:190px}
+.performance-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.admin-performance-table th,.admin-performance-table td{white-space:nowrap}
+.admin-performance-table th:nth-child(2),.admin-performance-table td:nth-child(2){text-align:center}
+.verified-badge{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:#1683ff;color:#fff;font-size:11px;font-weight:900;vertical-align:middle;margin-left:3px}
+
+/* Hierarchical admin sidebar — navigation only; no new backend routes */
+.admin-sidebar-nav{padding-bottom:24px}
+.admin-sidebar-nav .admin-nav-group{margin:3px 0;color:#fff}
+.admin-sidebar-nav .admin-nav-group>summary{cursor:pointer;list-style:none;position:relative;padding:13px 27px 13px 18px;font-weight:700;border-radius:9px;color:#e6efff;user-select:none}
+.admin-sidebar-nav .admin-nav-group>summary::-webkit-details-marker{display:none}
+.admin-sidebar-nav .admin-nav-group>summary:after{content:'⌄';position:absolute;right:10px;top:12px;color:#aabedb}
+.admin-sidebar-nav .admin-nav-group:not([open])>summary:after{content:'›'}
+.admin-sidebar-nav .admin-nav-group>summary:hover,.admin-sidebar-nav .admin-nav-group[open]>summary{background:#10243c}
+.admin-sidebar-nav .admin-nav-count{float:right;margin-right:7px;background:#263d58;padding:1px 7px;border-radius:20px}
+.admin-sidebar-nav .admin-nav-children{border-left:1px solid #29425f;margin:2px 0 8px 24px;padding-left:6px}
+.admin-sidebar-nav .admin-nav-children a,.admin-sidebar-nav .admin-nav-disabled{display:block;padding:9px 9px!important;margin:2px 0!important;font-size:13px!important;line-height:1.4!important;color:#d6e3f5!important;text-decoration:none;border-radius:7px;white-space:normal}
+.admin-sidebar-nav .admin-nav-children a:hover{background:#193758!important}
+.admin-sidebar-nav .admin-nav-children a.active{background:#1769ff!important;color:white!important}
+.admin-sidebar-nav .admin-nav-disabled{color:#93a5bc!important;cursor:not-allowed;opacity:.72}
+.admin-sidebar-nav .admin-nav-children small,.admin-sidebar-nav .admin-nav-disabled small{display:block;font-size:10px;color:#adc2da;font-weight:400;margin-left:17px}
+.admin-sidebar-nav .admin-top-link{margin:4px 0}
+
+/* Sidebar: fixed, independently scrollable; blue only active/hover */
+body aside{overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#526780 #071526}
+body aside .admin-sidebar-nav{min-width:0;padding-bottom:35px}
+body aside .admin-nav-group>summary{background:transparent!important;color:#e6efff!important;white-space:normal;overflow-wrap:break-word;font-size:15px}
+body aside .admin-nav-group>summary:hover{background:#183653!important}
+body aside .admin-sidebar-nav a:not(.active){background:transparent!important;color:#d7e2ef!important;box-shadow:none!important}
+body aside .admin-sidebar-nav a:hover,body aside .admin-sidebar-nav a.active{background:#1769ff!important;color:#fff!important}
+body aside .admin-nav-children{margin-left:12px!important;padding-left:7px!important;min-width:0}
+body aside .admin-nav-children a,body aside .admin-nav-disabled{display:flex!important;align-items:center;gap:5px;min-width:0;max-width:100%;white-space:normal!important;overflow-wrap:anywhere;font-size:12px!important;padding:9px 7px!important;line-height:1.25!important;margin:2px 0!important}
+body aside .admin-nav-disabled{background:transparent!important;opacity:.65;cursor:default;white-space:nowrap!important;font-size:11px!important}
+body aside .admin-nav-count{float:none!important;margin:0 0 0 auto!important;flex-shrink:0;background:#263d58!important;color:#dce8f9!important;padding:1px 6px!important;border-radius:12px!important;font-size:10px!important;font-weight:600!important;line-height:1.4!important}
+.analytic-module-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.analytic-module-grid .panel{min-width:0}.analytic-module-grid small{color:#667085}
+@media(max-width:950px){.analytic-module-grid{grid-template-columns:1fr}}
+/* Keep the ads group title on one line without affecting its children. */
+body aside .admin-nav-group#nav-ads>summary{white-space:nowrap!important;overflow-wrap:normal!important;font-size:13px!important;letter-spacing:-.2px;padding-left:10px!important;padding-right:19px!important}
+body aside .admin-nav-group#nav-ads>summary:after{right:4px!important}
+/* A hidden action must not be forced visible by older button CSS. */
+.action-stack [data-account-action][hidden]{display:none!important}
+
+/* FINAL sidebar layout: isolate from legacy `nav span {float:right}` rules. */
+:root{--admin-sidebar-width:285px}
+body>aside{width:var(--admin-sidebar-width)!important;height:100vh!important;max-height:100vh!important;overflow-y:scroll!important;overflow-x:hidden!important;scrollbar-gutter:stable!important;scrollbar-width:thin;box-sizing:border-box!important}
+body>main{margin-left:var(--admin-sidebar-width)!important}
+body aside .admin-sidebar-nav{display:block!important;width:100%!important}
+body aside .admin-nav-children{display:flex!important;flex-direction:column!important;align-items:stretch!important;width:auto!important;min-width:0!important;margin:2px 0 8px 12px!important;padding-left:7px!important}
+body aside .admin-nav-children>a,
+body aside .admin-nav-children>.admin-nav-disabled{float:none!important;clear:both!important;position:static!important;display:block!important;flex:none!important;box-sizing:border-box!important;width:100%!important;max-width:100%!important;min-width:0!important;margin:2px 0!important;padding:9px 8px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;font-size:13px!important;line-height:1.4!important;text-align:left!important}
+body aside .admin-nav-children>a .admin-nav-count{float:right!important;display:inline-block!important;width:auto!important;max-width:none!important;margin:0!important;padding:1px 6px!important;font-size:10px!important}
+body aside .admin-nav-group>summary,
+body aside .admin-nav-group#nav-ads>summary{font-size:15px!important;font-weight:700!important;letter-spacing:normal!important;white-space:nowrap!important;overflow-wrap:normal!important;padding:13px 24px 13px 12px!important}
+body aside .admin-nav-group#nav-ads>summary:after{right:9px!important}
+@media(max-width:700px){:root{--admin-sidebar-width:260px}}
+</style>
+<style>
+.post-summary-cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin:14px 0 8px}
+.post-summary-cards>div{background:#f3f7fd;border:1px solid #dce6f3;border-radius:12px;padding:14px;min-width:0}
+.post-summary-cards small{display:block;color:#53657f;font-size:12px}.post-summary-cards strong{display:block;font-size:24px;margin-top:7px;color:#102a50}
+.post-summary-note{font-size:12px;color:#64748b;margin:0 0 14px}
+.admin-post-table{table-layout:fixed}.admin-post-table th,.admin-post-table td{vertical-align:top;padding:11px 8px;overflow-wrap:anywhere}.admin-post-table th{white-space:nowrap;overflow-wrap:normal;font-size:12px}
+.admin-post-table th:nth-child(1){width:3%}.admin-post-table th:nth-child(2){width:19%}.admin-post-table th:nth-child(3){width:13%}.admin-post-table th:nth-child(4){width:12%}.admin-post-table th:nth-child(5){width:10%}.admin-post-table th:nth-child(6){width:15%}
+.admin-post-table th:nth-child(n+7){width:7%}.admin-post-table th:nth-child(9){width:9%}.admin-post-table .post-tags{font-size:12px;line-height:1.5;max-height:5.8em;overflow:auto;word-break:break-word}
+.post-date-meta{font-size:11px;color:#64748b;margin:6px 0}.admin-post-table details{font-size:12px}.admin-post-table summary{cursor:pointer}
+@media(max-width:950px){.post-summary-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style></head>
+<body>
+<aside><div class="brand">♪ <b>DashFYEPE</b><small>Posting Manager</small></div>
+<nav class="admin-sidebar-nav" aria-label="Menu utama Admin Medsos">
+<a class="admin-top-link" href="/" data-nav="dashboard">⌂ Dashboard</a>
+<details class="admin-nav-group" id="nav-akun" open><summary>♙ Akun TikTok</summary><div class="admin-nav-children">
+<a href="/auth/tiktok/login">＋ Connect Akun</a><a href="/#accounts">☷ List Akun <span class="admin-nav-count">{{total_accounts}}</span></a>
+</div></details>
+<details class="admin-nav-group" id="nav-posting"><summary>▣ Posting Content</summary><div class="admin-nav-children">
+<a href="/#post-video" title="Pilih akun untuk Post Video">▶ Post Video</a>
+<a href="/#post-photo" title="Pilih akun untuk Post Photo">▧ Post Photo</a>
+<a href="/#post-carousel" title="Pilih akun untuk Post Carousel">▤ Post Carousel</a>
+<span class="admin-nav-disabled" title="Fitur belum tersedia">▦ Media Library</span>
+<a href="/bulk-upload">⇧ Bulk Upload</a>
+<a href="/schedule">◷ List Schedule Post</a>
+<a href="/#list-post" data-nav="list-post">☷ List Post</a>
+</div></details>
+<details class="admin-nav-group" id="nav-ads"><summary>▣ TikTok Ads Manager</summary><div class="admin-nav-children">
+<a href="/#iklan-analitik-admin" data-ads-sub="create">＋ Create Ads</a>
+<a href="/#ads-reviewed" data-ads-sub="reviewed">☷ List Ads Reviewed</a>
+<a href="/#ads-running" data-ads-sub="running">▶ List Ads Running</a>
+<a href="/#ads-finish" data-ads-sub="finish">✓ List Ads Finish</a>
+</div></details>
+<a class="admin-top-link" href="/#analytics-admin" data-nav="analytics">▥ Analytic</a>
+<a class="admin-top-link" href="/users">♙ User Management</a>
+</nav></aside>
+<main>
+<header><input placeholder="Search accounts, content, or hashtag…"><div>Production • DashFYEPE • {{user.full_name or user.username}} ({{user.role}}) <form method="post" action="/logout" style="display:inline"><button class="btn compact-btn">Logout</button></form></div></header>
+{% with messages=get_flashed_messages(with_categories=true) %}{% for cat,msg in messages %}<div class="flash {{cat}}">{{msg}}</div>{% endfor %}{% endwith %}
+
+<div id="ads-admin-view" style="display:none">
+<section class="panel wide" id="iklan-analitik-admin" style="margin:22px 0;padding:22px">
+  <h3 style="margin:0 0 12px">Iklan-Tiktok Ads Manager — Admin Medsos</h3>
+  <p><strong>Status: TikTok Ads belum terhubung.</strong> Menu ini khusus admin. Belum ada kampanye yang dapat dibuat atau dijalankan dari DashFYEPE.</p>
+  <p>Admin dapat meninjau postingan dan mempersiapkan promosi melalui TikTok Ads Manager setelah memiliki akun iklan serta otorisasi yang sesuai. Statistik demografi iklan dan komentar baru ditampilkan jika sumber data resmi tersedia.</p>
+  <p><a href="https://ads.tiktok.com/" target="_blank" rel="noopener noreferrer" class="btn">Buka TikTok Ads Manager</a></p>
+  <p style="color:#667085;font-size:13px">Tidak ada kampanye atau biaya iklan yang dijalankan melalui tombol ini. Pengelolaan iklan dan anggaran tetap memerlukan otorisasi dan konfirmasi admin.</p>
+</section>
+<section class="panel wide" id="ads-reviewed" style="margin:18px 0;padding:18px" hidden><h3>List Ads Reviewed</h3><p>Belum ada daftar persetujuan tersimpan di server. Draft yang disetujui pada formulir Create Ads hanya tersedia selama halaman masih terbuka dan dapat diekspor sebagai JSON.</p></section>
+<section class="panel wide" id="ads-running" style="margin:18px 0;padding:18px" hidden><h3>List Ads Running</h3><p>Belum tersedia: TikTok Ads Manager dan reporting API belum terhubung. Tidak ada status kampanye berjalan yang dapat diverifikasi dari DashFYEPE.</p></section>
+<section class="panel wide" id="ads-finish" style="margin:18px 0;padding:18px" hidden><h3>List Ads Finish</h3><p>Belum tersedia: data kampanye selesai membutuhkan koneksi dan izin TikTok Ads reporting API.</p></section>
+<section class="panel wide" id="spark-draft" style="margin:22px 0;padding:22px">
+<h3>Seleksi Postingan Spark Ads — Draft Internal</h3>
+<p style="color:#667085">Pilih akun dan catat URL postingan untuk ditinjau. Tidak ada kampanye dibuat, tidak ada pembayaran, dan persetujuan hanya berlaku untuk rancangan internal pada layar ini.</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:15px 0">
+<div><label for="spark-account"><strong>Akun TikTok</strong></label><select id="spark-account" style="width:100%;padding:11px;border:1px solid #d5dce8;border-radius:8px"><option value="">-- Pilih akun terhubung --</option>{% for a in accounts %}<option value="{{a.open_id|e}}">{{(a.display_name or a.username or a.open_id)|e}}</option>{% endfor %}</select></div>
+<div><label for="spark-url"><strong>URL Postingan TikTok</strong></label><input id="spark-url" type="url" placeholder="https://www.tiktok.com/@.../video/..." style="width:100%;padding:11px;border:1px solid #d5dce8;border-radius:8px;box-sizing:border-box"></div>
+</div>
+<button type="button" class="btn" id="spark-add">+ Tambah ke Daftar Review</button>
+<p id="spark-feedback" role="status" style="font-size:13px"></p>
+<div style="overflow:auto"><table style="width:100%;margin-top:12px"><thead><tr><th>Akun</th><th>Postingan</th><th>Otorisasi Spark Ads</th><th>Review Admin</th><th>Aksi</th></tr></thead><tbody id="spark-list"><tr><td colspan="5">Belum ada postingan dipilih.</td></tr></tbody></table></div>
+<div style="background:#f3f6fa;padding:14px;border-radius:10px;margin-top:16px">
+<strong>Checklist sebelum persetujuan</strong><p style="font-size:13px">Login Kit bukan izin Spark Ads. Status otorisasi di sini harus diverifikasi secara manual melalui mekanisme resmi TikTok Ads; belum ada koneksi Marketing API.</p>
+<label style="display:block;margin:8px 0"><input type="checkbox" id="spark-check-auth"> Saya telah memeriksa hak penggunaan postingan dan otorisasi Spark Ads di luar DashFYEPE.</label>
+<label style="display:block;margin:8px 0"><input type="checkbox" id="spark-check-review"> Saya telah meninjau akun, URL, dan materi postingan.</label>
+<label style="display:block;margin:8px 0"><input type="checkbox" id="spark-check-approval"> Saya menyetujui draft internal ini; bukan persetujuan pembayaran atau penayangan.</label>
+<button type="button" class="btn" id="spark-approve" disabled>Setujui Draft Internal</button> <button type="button" class="btn" id="spark-export">Unduh Draft JSON</button>
+<p id="spark-status" role="status" style="font-size:13px">Status: Belum disetujui. Data hanya tersimpan sementara di halaman ini; gunakan Unduh Draft JSON untuk menyimpan salinan.</p>
+</div></section>
+</div>
+<div id="admin-analytics-view" style="display:none;padding:20px">
+<section class="panel" style="margin-bottom:16px"><h2 style="margin-top:0">Analytic — Seluruh Customer &amp; Media Sosial</h2><p>Ruang analitik lintas customer dan akun. Statistik yang sudah tersedia ditampilkan melalui dashboard operasional; data perbincangan, komentar, demografi dan performa iklan memerlukan sumber serta izin akses yang sesuai.</p><a class="btn" href="/#accounts">Lihat daftar akun &amp; statistik</a></section>
+<div class="analytic-module-grid">
+<section class="panel"><h3>Customer &amp; Akun</h3><p>Ringkasan lintas customer, akun TikTok, dan postingan.</p><small>Pengembangan: agregasi per customer dan rentang tanggal.</small></section>
+<section class="panel"><h3>Performa Konten</h3><p>Views, likes, komentar, shares, dan perkembangan engagement.</p><small>Data aktual mengikuti statistik yang sudah tersimpan di DashFYEPE.</small></section>
+<section class="panel"><h3>Percakapan &amp; Sentimen</h3><p>Topik, hashtag, isi komentar yang tersedia, sentimen, dan tren percakapan.</p><small>Belum tersedia analisis lintas platform atau pengambilan komentar otomatis.</small></section>
+<section class="panel"><h3>Performa TikTok Ads</h3><p>Reach, impressions, spend, engagement iklan, serta perbandingan kampanye.</p><small>Menunggu koneksi dan otorisasi TikTok Marketing API.</small></section>
+<section class="panel"><h3>Demografi Audiens</h3><p>Lokasi, umur, gender, bila disediakan oleh sumber laporan resmi.</p><small>Tidak menampilkan estimasi atau angka buatan.</small></section>
+<section class="panel"><h3>Laporan Customer</h3><p>Perbandingan hasil antar-customer, periode, dan kampanye.</p><small>Pengembangan lanjutan memerlukan agregasi data backend.</small></section>
+</div></div>
+<div id="admin-list-post-view" style="display:none">
+<section class="panel wide" style="margin:22px 0;padding:20px">
+  <h3 style="margin:0 0 6px">List Post — Seluruh Akun yang Dikelola</h3>
+  <div class="post-summary-cards" aria-label="Ringkasan postingan yang dimuat">
+    <div><small>Total Post</small><strong id="post-total-post">0</strong></div>
+    <div><small>Total Views</small><strong id="post-total-views">0</strong></div>
+    <div><small>Total Likes</small><strong id="post-total-likes">0</strong></div>
+    <div><small>Total Comments</small><strong id="post-total-comments">0</strong></div>
+    <div><small>Total Shares</small><strong id="post-total-shares">0</strong></div>
+  </div>
+  <p class="post-summary-note">Ringkasan dihitung dari postingan yang telah dimuat. Tekan Refresh All untuk mengambil data terbaru dari TikTok; hasil diurutkan berdasarkan views terbanyak.</p>
+  <button type="button" class="btn" id="admin-post-refresh">↻ Refresh All</button>
+  <div id="admin-post-content" style="margin-top:16px">
+    <h3>Post Teratas Berdasarkan Views</h3>
+    <p id="admin-post-status" role="status">Tekan Refresh All untuk memperbarui data postingan.</p>
+    <div style="overflow-x:auto"><table class="admin-post-table" style="width:100%;min-width:760px"><thead><tr><th>#</th><th>Postingan</th><th>Akun</th><th>Admin Medsos</th><th>Kategori</th><th>Hashtag</th><th>Views</th><th>Likes</th><th>Comments</th><th>Shares</th></tr></thead><tbody id="admin-post-rows"></tbody></table></div>
+    <div style="display:flex;gap:10px;align-items:center;margin-top:14px"><button type="button" class="btn" id="admin-post-next" hidden>Muat 10 Akun Berikutnya</button></div>
+  </div>
+</section>
+</div>
+<div id="admin-dashboard-view">
+<section class="cards"><div class="card"><small>Total Accounts</small><h2>{{accounts|length}}</h2><em>Database connected</em></div><div class="card"><small>Scheduled Posts</small><h2>0</h2><em>V2</em></div><div class="card"><small>Publishing Status</small><h2>Ready</h2><em>OAuth + creator info</em></div><div class="card"><small>Environment</small><h2>Production</h2><em>Live production flow</em></div></section>
+<section class="grid">
+<div class="panel wide" id="accounts"><div class="panelhead"><div><h3>Accounts</h3><small class="page-meta">Menampilkan {{((page-1)*per_page)+1 if total_accounts else 0}}–{{[page*per_page,total_accounts]|min}} dari {{total_accounts}} akun • 50 akun per halaman</small></div><div class="admin-filter-bar">{% if user.role=="superadmin" %}<label for="admin-filter">Filter Admin Medsos</label><select id="admin-filter" onchange="document.getElementById('admin-filter-hidden').value=this.value;document.getElementById('admin-filter-form').submit();"><option value="">Semua Admin — Views terbanyak</option>{% for adm in admins %}<option value="{{adm.id}}" {% if admin_filter|string==adm.id|string %}selected{% endif %}>{{adm.full_name or adm.username}}</option>{% endfor %}</select><form id="admin-filter-form" method="get" action="/" style="display:none"><input type="hidden" name="admin_filter" id="admin-filter-hidden" value="{{admin_filter}}"></form>{% endif %}<a class="btn" href="/auth/tiktok/login">+ Connect Account</a></div></div>
+{% if accounts %}
+<table>
+<tr>
+<th>
+ <div class="account-stats-head">
+  <span>Account & Statistics</span>
+  <button type="button" id="refresh-all-stats" class="refresh-all-btn">↻ Refresh All Statistik</button>
+ </div>
+</th>
+<th>Scopes</th><th>Connected</th><th></th>
+</tr>
+{% for a in accounts %}
+<tr>
+<td class="account-cell">
+ <div class="account-top">
+  <div class="account-no">{{loop.index}}.</div>
+  <div class="account-main">
+   <div class="account-name">
+    {% if a.avatar_url %}<img src="/account/{{a.open_id}}/avatar" alt="{{a.display_name}}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.marginLeft='0'">{% else %}<span class="avatar-fallback">{{(a.display_name or '?')[:1]|upper}}</span>{% endif %}
+    {% if a.profile_deep_link %}
+    <a href="{{a.profile_deep_link}}" target="_blank" rel="noopener">{{a.display_name}} ↗</a>
+    {% elif a.username %}
+    <a href="https://www.tiktok.com/@{{a.username|replace('@','')}}" target="_blank" rel="noopener">{{a.display_name}} ↗</a>
+    {% else %}
+    <span>{{a.display_name}}</span>
+    {% endif %}
+    {% if a.is_verified %}<span class="verified-badge" title="Akun terverifikasi">✓</span>{% endif %}
+    {% if a.admin_medsos %}<span class="admin-owner">👤 {{a.admin_medsos}}</span>{% else %}<span class="admin-owner unassigned">👤 Belum ditugaskan</span>{% endif %}
+    {% if a.category %}<em class="category-top">{{a.category}}</em>{% endif %}
+   </div>
+   <div class="stats-line">
+    <span>Posts <b>{{a.video_count if a.video_count is not none else 0}}</b></span>
+    <span>Views <b>{{a.view_count if a.view_count is not none else 0}}</b></span>
+    <span>Likes <b>{{a.likes_count if a.likes_count is not none else 0}}</b></span>
+    <span>Comments <b>{{a.comment_count if a.comment_count is not none else 0}}</b></span>
+    <span>Followers <b>{{a.follower_count if a.follower_count is not none else 0}}</b></span>
+    <span>Following <b>{{a.following_count if a.following_count is not none else 0}}</b></span>
+   </div>
+   <div class="email-line">✉ <strong>{{a.email if a.email else 'Email belum diisi'}}</strong></div>
+   {% if not a.username or not a.email or not a.category or not a.admin_medsos %}
+   <div class="account-actions-inline">
+    <form class="account-edit" method="post" action="/account/{{a.open_id}}/details">
+     <input name="username" value="{{a.username or ''}}" placeholder="username akun">
+     <input name="email" type="email" value="{{a.email or ''}}" placeholder="email akun">
+     <input name="category" value="{{a.category or ''}}" placeholder="kategori, contoh: Agama Islam">
+     {% if user.role=="superadmin" %}<input name="admin_medsos" value="{{a.admin_medsos or ''}}" placeholder="Nama Admin Medsos / PIC">{% endif %}{% if user.role=="superadmin" %}<select name="assigned_admin_id"><option value="">-- Pilih Admin --</option>{% for adm in admins %}<option value="{{adm.id}}" {% if a.assigned_admin_id==adm.id %}selected{% endif %}>{{adm.full_name or adm.username}}</option>{% endfor %}</select>{% endif %}
+     <button class="mini-save compact-btn" type="submit">Simpan</button>
+    </form>
+    <form method="post" action="/account/{{a.open_id}}/refresh-stats" class="refresh-inline js-refresh-stats">
+     <button class="refresh-btn compact-btn" type="submit">↻ Refresh statistik</button>
+    </form>
+   </div>
+   {% else %}
+   <div class="account-actions-inline">
+    <details class="account-edit-details">
+     <summary class="mini-edit compact-btn">Edit</summary>
+     <form class="account-edit edit-expanded" method="post" action="/account/{{a.open_id}}/details">
+      <input name="username" value="{{a.username or ''}}" placeholder="username akun" required>
+      <input name="email" type="email" value="{{a.email or ''}}" placeholder="email akun" required>
+      <input name="category" value="{{a.category or ''}}" placeholder="kategori, contoh: Agama Islam" required>
+      {% if user.role=="superadmin" %}<input name="admin_medsos" value="{{a.admin_medsos or ''}}" placeholder="Nama Admin Medsos / PIC" required>{% endif %}{% if user.role=="superadmin" %}<select name="assigned_admin_id"><option value="">-- Pilih Admin --</option>{% for adm in admins %}<option value="{{adm.id}}" {% if a.assigned_admin_id==adm.id %}selected{% endif %}>{{adm.full_name or adm.username}}</option>{% endfor %}</select>{% endif %}
+      <button class="mini-save compact-btn" type="submit">Simpan</button>
+     </form>
+    </details>
+    <form method="post" action="/account/{{a.open_id}}/refresh-stats" class="refresh-inline js-refresh-stats">
+     <button class="refresh-btn compact-btn" type="submit">↻ Refresh statistik</button>
+    </form>
+   </div>
+   {% endif %}
+   {% if a.stats_updated_at %}
+   <div class="stats-update-time">Update {{a.stats_updated_at[:19].replace('T',' ')}}</div>
+   {% endif %}
+  </div>
+ </div>
+</td>
+<td><div class="scope-box">{% for sc in (a.scope or '').split(',') %}<span class="scope-line">{{sc}}</span>{% endfor %}</div></td>
+<td>{{a.connected_at[:19].replace('T',' ') if a.connected_at else '—'}}</td>
+<td><div class="action-stack">
+<a class="smallbtn" data-account-action="video" href="/create-post/{{a.open_id}}">Post Video</a>
+<a class="smallbtn photo" data-account-action="photo" href="/create-photo/{{a.open_id}}?mode=photo">Post Photo</a>
+<a class="smallbtn carousel" data-account-action="carousel" href="/create-photo/{{a.open_id}}?mode=carousel">Post Carousel</a>
+<form data-account-action="disconnect" method="post" action="/account/{{a.open_id}}/disconnect" onsubmit="return confirm('Unconnect akun {{a.display_name}} dari DashFYEPE dan cabut izin akun ini?');"><button class="deletebtn" type="submit">Unconnect</button></form>
+</div></td>
+</tr>
+{% endfor %}
+</table>
+{% else %}
+<div class="empty"><h3>No account connected yet</h3><p>Use your authorized Sandbox Target User to test Login Kit.</p><a class="btn" href="/auth/tiktok/login">Connect Account</a></div>
+{% endif %}
+{% if total_pages > 1 %}
+<div class="pagination">
+  {% if page > 1 %}<a href="/?page={{page-1}}&per_page={{per_page}}">‹ Sebelumnya</a>{% endif %}
+  <span>Halaman {{page}} / {{total_pages}}</span>
+  {% if page < total_pages %}<a href="/?page={{page+1}}&per_page={{per_page}}">Berikutnya ›</a>{% endif %}
+</div>
+{% endif %}
+</div>
+<div class="panel admin-performance-panel" id="analytics-admin"><div class="performance-head"><div><h3>Performa Admin Medsos</h3><small class="panel-note">{% if admin_filter %}Hasil filter admin, diurutkan berdasarkan Views terbesar.{% else %}Semua akun, diurutkan berdasarkan Views terbesar.{% endif %}</small></div></div>
+{% if admin_performance %}
+<table class="admin-performance-table">
+<tr><th>Admin Medsos</th><th>Akun</th><th>Post</th><th>Views</th><th>Likes</th><th>Comments</th><th>Shared</th></tr>
+{% for p in admin_performance %}
+<tr>
+<td><strong>{{p.admin_medsos}}</strong></td>
+<td>{{p.account_count}}</td>
+<td>{{p.post_count or 0}}</td>
+<td><strong>{{p.total_views}}</strong></td>
+<td>{{p.total_likes}}</td>
+<td>{{p.total_comments}}</td>
+<td>{{p.total_shares or 0}}</td>
+</tr>
+{% endfor %}
+</table>
+{% else %}<div class="empty-mini">Belum ada data Admin Medsos.</div>{% endif %}
+</div>
+<div class="panel"><h3>Quick Actions</h3>
+<a class="action" href="/auth/tiktok/login">Connect Account</a>
+<a class="action pink" href="/">Create New Post</a>
+<a class="action purple" href="/bulk-upload">Bulk Upload</a>
+<a class="action green" href="/">Media Library</a>
+</div>
+</section>
+</div>
+</main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const btn = document.getElementById('refresh-all-stats');
+  if (!btn) return;
+  btn.addEventListener('click', async function () {
+    if (!confirm('Refresh statistik semua akun? Proses berjalan di server dan dapat memerlukan waktu cukup lama untuk banyak akun.')) return;
+    const original = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '↻ Menyiapkan...';
+    try {
+      const start = await fetch('/stats/refresh-all', {method:'POST', credentials:'same-origin', headers:{'X-Requested-With':'XMLHttpRequest'}});
+      const data = await start.json();
+      if (!data.ok) throw new Error(data.message || 'Gagal membuat antrean');
+      const poll = async () => {
+        const r = await fetch('/stats/refresh-all/' + data.batch_id, {credentials:'same-origin'});
+        const st = await r.json();
+        btn.textContent = '↻ ' + st.completed + '/' + st.total + ' akun';
+        if (st.status === 'DONE') {
+          btn.textContent = '✓ Selesai — mengurutkan...';
+          window.location.reload();
+          return;
+        }
+        setTimeout(poll, 1500);
+      };
+      poll();
+    } catch (e) {
+      btn.disabled = false;
+      btn.textContent = original;
+      alert('Gagal memulai Refresh All: ' + e.message);
+    }
+  });
+});
+</script>
+<script>
+(function(){
+  function switchAdminView(){
+    const hash = window.location.hash;
+    const isAnalytics = hash === '#analytics-admin';
+    const isListPost = hash === '#list-post';
+    const accountModes = {'#accounts':'disconnect','#post-video':'video','#post-photo':'photo','#post-carousel':'carousel'};
+    const accountMode = accountModes[hash] || 'disconnect';
+    document.querySelectorAll('[data-account-action]').forEach(el => { el.hidden = el.dataset.accountAction !== accountMode; });
+    const isAds = ['#iklan-analitik-admin','#ads-reviewed','#ads-running','#ads-finish'].includes(hash);
+    const activeAds = hash === '#iklan-analitik-admin' ? 'create' : hash.replace('#ads-','');
+    ['ads-reviewed','ads-running','ads-finish'].forEach(id => {const el=document.getElementById(id);if(el)el.hidden = hash !== '#'+id;});
+    const draft = document.getElementById('spark-draft');
+    const intro = document.getElementById('iklan-analitik-admin');
+    if(draft) draft.style.display = !isAds || activeAds==='create' ? '' : 'none';
+    if(intro) intro.style.display = !isAds || activeAds==='create' ? '' : 'none';
+    const ads = document.getElementById('ads-admin-view');
+    const dashboard = document.getElementById('admin-dashboard-view');
+    const analytics = document.getElementById('admin-analytics-view');
+    if (!ads || !dashboard) return;
+    ads.style.display = isAds ? 'block' : 'none';
+    dashboard.style.display = (isAds || isAnalytics || isListPost) ? 'none' : 'block';
+    const postView = document.getElementById('admin-list-post-view');
+    if(postView) postView.style.display = isListPost ? 'block' : 'none';
+    if (analytics) analytics.style.display = isAnalytics ? 'block' : 'none';
+    document.querySelectorAll('.admin-sidebar-nav a').forEach(a => {
+      const href=a.getAttribute('href');
+      a.classList.toggle('active', isAds ? href === '/'+hash :
+        (hash === '#analytics-admin' ? href === '/#analytics-admin' :
+         (hash in accountModes || isListPost) ? href === '/'+hash : !hash && a.dataset.nav === 'dashboard'));
+    });
+    if(isAds) document.getElementById('nav-ads').open=true;
+    if(hash==='#accounts') document.getElementById('nav-akun').open=true;
+    if(['#post-video','#post-photo','#post-carousel'].includes(hash)) document.getElementById('nav-posting').open=true;
+    if(hash==='#analytics-admin') document.getElementById('nav-posting').open=false;
+    if(isListPost) document.getElementById('nav-posting').open=true;
+    if (isAds || isAnalytics) window.scrollTo(0,0);
+  }
+  window.addEventListener('hashchange', switchAdminView);
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', switchAdminView);
+  else switchAdminView();
+})();
+</script>
+<script>
+(function(){
+ const items=[];
+ const $=id=>document.getElementById(id);
+ const checks=['spark-check-auth','spark-check-review','spark-check-approval'];
+ function ready(){return items.length>0 && checks.every(id=>$(id).checked);}
+ function sync(){ $('spark-approve').disabled=!ready(); }
+ function render(){const tbody=$('spark-list');tbody.replaceChildren();if(!items.length){const tr=tbody.insertRow();const td=tr.insertCell();td.colSpan=5;td.textContent='Belum ada postingan dipilih.';sync();return;}
+ items.forEach((p,i)=>{const tr=tbody.insertRow();[p.name,p.url,'Belum diverifikasi melalui API resmi',p.approved?'Draft disetujui':'Menunggu review'].forEach(v=>{const td=tr.insertCell();td.textContent=v;});const td=tr.insertCell();const b=document.createElement('button');b.type='button';b.textContent='Hapus';b.onclick=()=>{items.splice(i,1);render();};td.appendChild(b);});sync();}
+ $('spark-add').addEventListener('click',()=>{const s=$('spark-account');const url=$('spark-url').value.trim();let parsed;try{parsed=new URL(url);}catch(e){}if(!s.value || !parsed || parsed.protocol!=='https:' || !['tiktok.com','www.tiktok.com','m.tiktok.com'].includes(parsed.hostname) || !parsed.pathname.includes('/video/')){$('spark-feedback').textContent='Pilih akun dan masukkan URL video TikTok yang valid.';return;}
+ if(items.some(x=>x.account===s.value && x.url===url)){$('spark-feedback').textContent='Postingan sudah masuk daftar.';return;}
+ items.push({account:s.value,name:s.options[s.selectedIndex].text,url,approved:false});checks.forEach(id=>$(id).checked=false);$('spark-feedback').textContent='Postingan masuk daftar review, belum terotorisasi untuk iklan.';$('spark-url').value='';render();});
+ checks.forEach(id=>$(id).addEventListener('change',sync));
+ $('spark-approve').addEventListener('click',()=>{if(!ready())return;items.forEach(p=>p.approved=true);$('spark-status').textContent='Draft internal disetujui di halaman ini saja. Belum disimpan ke server, belum ada iklan atau biaya.';render();});
+ $('spark-export').addEventListener('click',()=>{if(!items.length){$('spark-status').textContent='Pilih postingan terlebih dahulu.';return;}const data={type:'spark_ads_internal_draft',not_an_ad_campaign:true,items:items.map(p=>({account:p.name,post_url:p.url,internal_approval:p.approved,ad_authorization_api_verified:false}))};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='dashfyepe-spark-draft.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);});
+})();
+</script>
+<script>
+(function(){
+  const refresh=document.getElementById('admin-post-refresh');
+  const next=document.getElementById('admin-post-next');
+  const status=document.getElementById('admin-post-status'), rows=document.getElementById('admin-post-rows');
+  let page=1, busy=false, loaded=[];
+  function td(tr,value){const c=tr.insertCell();c.textContent=String(value??'—');return c;}
+  function fmt(n){return Number(n||0).toLocaleString('id-ID');}
+  function summary(){const fields=[['post-total-post',loaded.length],['post-total-views',loaded.reduce((n,p)=>n+Number(p.view_count||0),0)],['post-total-likes',loaded.reduce((n,p)=>n+Number(p.like_count||0),0)],['post-total-comments',loaded.reduce((n,p)=>n+Number(p.comment_count||0),0)],['post-total-shares',loaded.reduce((n,p)=>n+Number(p.share_count||0),0)]];for(const [id,val] of fields)document.getElementById(id).textContent=fmt(val);}
+  function timeInfo(raw){const n=Number(raw);if(!Number.isFinite(n)||n<=0)return null;const d=new Date(n<1e12?n*1000:n);return Number.isNaN(d.getTime())?null:d;}
+  function elapsed(d){let mins=Math.max(0,Math.floor((Date.now()-d.getTime())/60000));const days=Math.floor(mins/1440);mins%=1440;const hours=Math.floor(mins/60);return days+' hari; '+String(hours).padStart(2,'0')+':'+String(mins%60).padStart(2,'0');}
+  function render(){rows.replaceChildren();for(const [i,p] of loaded.entries()){
+    const tr=rows.insertRow();td(tr,i+1);const cell=tr.insertCell();
+    const id=document.createElement('a');id.textContent=String(p.video_id||'—');const handle=String(p.username||'').replace(/^@/,'').trim();
+    let videoUrl='';try{const u=new URL(p.share_url||'');if(u.protocol==='https:'&&(['tiktok.com','www.tiktok.com','m.tiktok.com'].includes(u.hostname)))videoUrl=u.href;}catch(e){}
+    if(!videoUrl&&handle&&p.video_id)videoUrl='https://www.tiktok.com/@'+encodeURIComponent(handle)+'/video/'+encodeURIComponent(p.video_id);
+    if(videoUrl){id.href=videoUrl;id.target='_blank';id.rel='noopener noreferrer';}cell.appendChild(id);
+    const d=timeInfo(p.create_time);const meta=document.createElement('div');meta.className='post-date-meta';meta.textContent=d?new Intl.DateTimeFormat('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'Asia/Jakarta'}).format(d)+' WIB · '+elapsed(d):'Tanggal upload tidak tersedia';cell.appendChild(meta);
+    const caption=document.createElement('details');const capSum=document.createElement('summary');capSum.textContent='＋ Lihat Caption';caption.appendChild(capSum);const capText=document.createElement('p');capText.textContent=p.title||'(Tanpa caption)';caption.appendChild(capText);cell.appendChild(caption);
+    const acc=tr.insertCell();const al=document.createElement('a');al.textContent='@'+(handle||p.display_name||'akun');if(handle){al.href='https://www.tiktok.com/@'+encodeURIComponent(handle);al.target='_blank';al.rel='noopener noreferrer';}acc.appendChild(al);
+    td(tr,p.admin_medsos||'—');td(tr,p.category||'—');const tags=tr.insertCell();const tagDetails=document.createElement('details');const tagSummary=document.createElement('summary');tagSummary.textContent='＋ Lihat Hashtag';tagDetails.appendChild(tagSummary);const tagText=document.createElement('div');tagText.className='post-tags';tagText.textContent=(p.hashtags||[]).join(' ')||'Tidak ada hashtag';tagDetails.appendChild(tagText);tags.appendChild(tagDetails);
+    td(tr,fmt(p.view_count));td(tr,fmt(p.like_count));td(tr,fmt(p.comment_count));td(tr,fmt(p.share_count));
+  }summary();}
+  async function fetchPosts(append){
+    if(busy)return;busy=true;refresh.disabled=true;next.disabled=true;if(!append){loaded=[];render();next.hidden=true;}status.textContent='Memuat postingan dari TikTok...';
+    try{const r=await fetch('/admin/posts?page='+page,{credentials:'same-origin'});if(!r.ok)throw new Error('HTTP '+r.status);const data=await r.json();if(!data.ok)throw new Error('Data tidak tersedia');
+      if(!append)loaded=[];loaded.push(...data.posts);loaded.sort((a,b)=>Number(b.view_count||0)-Number(a.view_count||0));render();
+      status.textContent='Halaman '+page+': '+data.scanned_accounts+' akun diperiksa, '+data.posts.length+' postingan ditemukan'+(data.errors.length?'; '+data.errors.length+' akun gagal/izin terbatas':'')+'.';next.hidden=!data.has_more;page++;
+    }catch(e){status.textContent='Gagal mengambil postingan: '+e.message;}finally{busy=false;refresh.disabled=false;next.disabled=false;}
+  }
+  refresh.addEventListener('click',()=>{page=1;fetchPosts(false);});
+  next.addEventListener('click',()=>fetchPosts(true));
+  let initialized=false;function initializeListPost(){if(!initialized&&location.hash==='#list-post'){initialized=true;page=1;fetchPosts(false);}}
+  window.addEventListener('hashchange',initializeListPost);initializeListPost();
+})();
+</script>
+</body></html>
