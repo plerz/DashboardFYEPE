@@ -414,6 +414,13 @@ def init_db():
         gateway_id TEXT NOT NULL, serial TEXT NOT NULL, image_data BLOB,
         updated_at TEXT NOT NULL, PRIMARY KEY(gateway_id,serial)
     )""")
+    # Tahap 4A: persistent Panda slot number; never infer from ADB enumeration.
+    if c.is_pg:
+        pfcols = {r["column_name"] for r in c.execute("SELECT column_name FROM information_schema.columns WHERE table_schema='public' AND table_name='phonefarm_devices'").fetchall()}
+    else:
+        pfcols = {r["name"] for r in c.execute("PRAGMA table_info(phonefarm_devices)").fetchall()}
+    if "panda_number" not in pfcols:
+        c.execute("ALTER TABLE phonefarm_devices ADD COLUMN panda_number INTEGER")
     c.execute("CREATE INDEX IF NOT EXISTS idx_phonefarm_commands_gateway ON phonefarm_commands(gateway_id,status,created_at)")
     c.commit()
     c.close()
@@ -2481,7 +2488,7 @@ def phonefarm_page():
         session["phonefarm_csrf"] = secrets.token_urlsafe(24)
     c = db()
     gateways = [dict(r) for r in c.execute("SELECT id,name,created_at,last_seen FROM phonefarm_gateways ORDER BY created_at DESC").fetchall()]
-    devices = [dict(r) for r in c.execute("SELECT d.*,g.name AS gateway_name FROM phonefarm_devices d JOIN phonefarm_gateways g ON g.id=d.gateway_id ORDER BY g.name,d.serial").fetchall()]
+    devices = [dict(r) for r in c.execute("SELECT d.*,g.name AS gateway_name FROM phonefarm_devices d JOIN phonefarm_gateways g ON g.id=d.gateway_id ORDER BY g.name,CASE WHEN d.panda_number IS NULL THEN 1 ELSE 0 END,d.panda_number,d.serial").fetchall()]
     c.close()
     now = datetime.now(timezone.utc)
     for d in devices:
@@ -2492,6 +2499,56 @@ def phonefarm_page():
     recent_commands = [dict(r) for r in db_read_phonefarm_commands() if r["action"] != "SCREENSHOT"]
     return render_template("phonefarm.html", user=current_user(), gateways=gateways, devices=devices, recent_commands=recent_commands,
                            csrf_token=session["phonefarm_csrf"], pairing_token=session.pop("phonefarm_new_token",None))
+
+@app.post("/phonefarm/gateway/<gateway_id>/rename")
+@role_required("superadmin")
+def phonefarm_gateway_rename(gateway_id):
+    if not secrets.compare_digest(request.form.get("csrf_token", ""), session.get("phonefarm_csrf", "")):
+        abort(403)
+    name = request.form.get("name", "").strip()[:80]
+    if not name or not re.fullmatch(r"[0-9a-f]{16}", gateway_id):
+        abort(400)
+    c = db()
+    exists = c.execute("SELECT id FROM phonefarm_gateways WHERE id=?", (gateway_id,)).fetchone()
+    if not exists:
+        c.close(); abort(404)
+    c.execute("UPDATE phonefarm_gateways SET name=? WHERE id=?", (name, gateway_id))
+    c.commit(); c.close()
+    audit_write("PHONEFARM_RENAME", "Nama kluster diperbarui")
+    flash("Nama kluster berhasil diperbarui.", "success")
+    return redirect(url_for("phonefarm_page"))
+
+@app.post("/phonefarm/device/number")
+@role_required("superadmin")
+def phonefarm_device_number():
+    if not secrets.compare_digest(request.form.get("csrf_token", ""), session.get("phonefarm_csrf", "")):
+        abort(403)
+    gid = request.form.get("gateway_id", "")
+    serial = request.form.get("serial", "")
+    raw = request.form.get("panda_number", "").strip()
+    if not re.fullmatch(r"[0-9a-f]{16}", gid) or not re.fullmatch(r"[A-Za-z0-9._:-]{4,70}", serial):
+        abort(400)
+    try:
+        number = int(raw) if raw else None
+    except ValueError:
+        abort(400)
+    if number is not None and not 1 <= number <= 100:
+        abort(400)
+    c = db()
+    device = c.execute("SELECT 1 FROM phonefarm_devices WHERE gateway_id=? AND serial=?", (gid, serial)).fetchone()
+    if not device:
+        c.close(); abort(404)
+    if number is not None:
+        duplicate = c.execute("SELECT serial FROM phonefarm_devices WHERE gateway_id=? AND panda_number=? AND serial<>?", (gid, number, serial)).fetchone()
+        if duplicate:
+            c.close()
+            flash("Nomor Panda tersebut sudah dipakai HP lain dalam kluster ini.", "error")
+            return redirect(url_for("phonefarm_page"))
+    c.execute("UPDATE phonefarm_devices SET panda_number=? WHERE gateway_id=? AND serial=?", (number, gid, serial))
+    c.commit(); c.close()
+    audit_write("PHONEFARM_NUMBER", "Mapping nomor Panda diperbarui")
+    flash("Nomor HP Panda berhasil disimpan.", "success")
+    return redirect(url_for("phonefarm_page"))
 
 @app.post("/phonefarm/pair")
 @role_required("superadmin")
