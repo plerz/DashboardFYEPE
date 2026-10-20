@@ -1,0 +1,484 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Phone Farm - DashFYEPE</title><link rel="stylesheet" href="/static/style.css"><style>body{background:#f5f8fc;color:#17243c;font-family:Arial,sans-serif;margin:0}.wrap{max-width:1150px;margin:30px auto;padding:0 18px}.panel{background:white;border:1px solid #dce5f0;border-radius:14px;padding:20px;margin:15px 0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}.device{border:1px solid #e0e8f3;border-radius:12px;padding:15px}.online{color:#067647}.offline{color:#b42318}.muted{color:#667085}button{background:#1769ff;color:white;border:0;padding:10px 14px;border-radius:8px;cursor:pointer}input{padding:10px;border:1px solid #cbd5e1;border-radius:8px}code{overflow-wrap:anywhere}a{color:#1769ff}.danger{background:#b42318}.screen-modal{display:none;position:fixed;inset:0;background:#101828cc;z-index:1000;align-items:center;justify-content:center;padding:15px}.screen-modal.open{display:flex}.screen-box{background:#fff;border-radius:14px;padding:16px;max-width:430px;width:100%;max-height:95vh;overflow:auto}.screen-image{display:block;max-width:100%;max-height:68vh;margin:auto;object-fit:contain;background:#18212e;border-radius:9px}.screen-actions{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}.screen-close{background:#475467}.screen-meta{font-size:12px;color:#667085;margin:8px 0}</style><style>.pf-fold{background:#fff;border:1px solid #dce5f0;border-radius:14px;margin:12px 0;overflow:hidden}.pf-fold>summary{cursor:pointer;padding:16px 20px;font-size:17px;font-weight:700;color:#17243c;display:flex;align-items:center;justify-content:space-between;list-style:none}.pf-fold>summary::-webkit-details-marker{display:none}.pf-arrow{font-size:24px;transition:transform .15s}.pf-fold[open]>.pf-arrow,.pf-fold[open]>summary .pf-arrow{transform:rotate(180deg)}.pf-fold>.panel{border:0;border-top:1px solid #edf1f6;border-radius:0;margin:0;box-shadow:none}.pf-op-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}.pf-op-grid>div{padding:12px;border:1px solid #e1e7ef;border-radius:9px}.pf-op-grid p{margin-bottom:0;font-size:13px}</style><style>
+.pf-step{display:inline-flex;align-items:center;justify-content:center;min-width:32px;height:32px;border-radius:9px;background:#e8efff;color:#155eef;font-weight:800;margin-right:12px}
+.pf-farm-fold{border:1px solid #dce5f0;border-radius:12px;margin:12px 0;overflow:hidden;background:#fff}
+.pf-farm-fold>summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;padding:16px;font-size:16px;font-weight:700}
+.pf-farm-fold>summary::-webkit-details-marker{display:none}
+.pf-farm-fold[open]>summary .pf-arrow{transform:rotate(180deg)}
+.pf-count{display:inline-block;background:#eaf6ee;color:#067647;border-radius:999px;padding:5px 10px;font-size:13px;margin-left:8px}
+.pf-farm-content{padding:16px;border-top:1px solid #edf1f6}
+</style><style>.pf-fold>summary{justify-content:space-between!important;text-align:left!important}.pf-heading{display:inline-flex;align-items:center;justify-content:flex-start;gap:12px;text-align:left}.pf-step{margin-right:0!important;flex:0 0 34px}.pf-heading>span:last-child{display:inline-block}</style><style>
+.pf-login-heading{display:inline-flex;align-items:center;gap:12px;text-align:left}
+.pf-login-heading>span:last-child{display:flex;flex-direction:column;gap:4px}
+.pf-login-heading small{font-size:12px;font-weight:400;color:#667085}
+.pf-app-icon{width:36px;height:36px;flex:0 0 36px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;font-size:23px;font-weight:800}
+.pf-gmail-icon{background:#fff;border:1px solid #e1e7ef;color:#ea4335;font-family:Arial,sans-serif}
+.pf-tiktok-icon{background:#111827;color:#fff;text-shadow:-2px -1px #25f4ee,2px 1px #fe2c55}
+.pf-account-info{border:1px solid #dbe3ef;background:#f8fafc;border-radius:8px;padding:12px;color:#475467;font-size:13px}
+</style><style>
+.pf-farm-content>.grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.pf-device-card{min-width:0;padding:16px;border-radius:14px;box-shadow:0 2px 8px #152b4a08}.pf-device-title{display:flex;align-items:center;gap:12px;margin-bottom:18px}.pf-device-title strong{font-size:19px}.pf-phone-icon{display:grid;place-items:center;width:44px;height:48px;border-radius:10px;background:#edf2f8;font-size:32px;color:#263e60}.pf-serial{font-size:12px;color:#60718b;overflow-wrap:anywhere;margin-top:5px}.pf-number-form>label{display:block;font-size:14px;margin-bottom:7px}.pf-number-controls{display:flex;gap:6px;align-items:center}.pf-number-controls input{min-width:0;width:35%;flex:1;padding:10px 8px}.pf-number-controls input[readonly]{background:#f5f7fa;color:#344054}.pf-number-controls button{padding:10px 8px;white-space:nowrap;font-size:13px}.pf-number-controls .pf-edit{border:1px solid #1769ff;background:white;color:#1769ff}.pf-number-controls button:disabled{background:#cfd4dc;color:white;cursor:not-allowed;border-color:#cfd4dc}.pf-device-model{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-top:1px solid #e8edf4;padding-top:18px;margin-top:18px;font-size:13px}.pf-device-status{display:flex;align-items:center;gap:15px;margin-top:20px;font-size:14px}.pf-battery{color:#059669;border-left:1px solid #cbd5e1;padding-left:14px}.pf-lastseen{display:flex;gap:4px;align-items:center;white-space:nowrap;font-size:11px;color:#667085;margin:18px 0 22px}.pf-tier-list{border-top:2px dashed #e1e7ef;padding-top:18px}.pf-tier-row{display:flex;align-items:center;gap:8px;padding:12px 8px;border:1px solid #e8edf5;background:#f8fafc;min-width:0;font-size:12px}.pf-tier-row:first-child{border-radius:8px 8px 0 0}.pf-tier-row:last-child{border-radius:0 0 8px 8px}.pf-tier-row strong{white-space:nowrap}.pf-tier-email{color:#667085;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}.pf-tier-dot{width:10px;height:10px;flex:0 0 10px;border-radius:50%}.pf-dot-0{background:#3bc968}.pf-dot-1{background:#1677ff}.pf-dot-2{background:#ffbf00}.pf-dot-3{background:#8c3bfa}.pf-dot-4{background:#929ba9}.pf-device-actions{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:15px}.pf-device-actions form{display:flex;gap:5px}.pf-device-actions button{padding:7px 9px;font-size:12px}.pf-device-actions button:disabled{opacity:.4;cursor:not-allowed}.pf-device-actions{min-height:31px;align-items:center}@media(max-width:1150px){.pf-farm-content>.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:600px){.pf-farm-content>.grid{grid-template-columns:1fr}}
+</style><script>function pfEditPanda(btn){const form=btn.closest('form');const input=form.querySelector('input[name="panda_number"]');input.readOnly=false;input.focus();input.select();form.querySelector('.pf-save').disabled=false;btn.disabled=true;}document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('.pf-wib').forEach(el=>{let raw=el.dataset.utc;if(!raw)return;try{let iso=raw.replace(' ','T');if(!/[zZ]|[+-]\d\d:?\d\d$/.test(iso))iso+='Z';const dt=new Date(iso);if(Number.isNaN(dt.getTime()))return;const parts=new Intl.DateTimeFormat('id-ID',{timeZone:'Asia/Jakarta',day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).formatToParts(dt);const v=k=>parts.find(p=>p.type===k)?.value||'';el.textContent=`${v('day')} ${v('month')} ${v('year')} · ${v('hour')}:${v('minute')}:${v('second')} WIB`; }catch(e){} });});</script><style>
+.pf-tiktok-table-scroll{overflow-x:auto;width:100%}
+.pf-tiktok-table{min-width:600px;width:100%}
+.pf-tiktok-head,.pf-tiktok-row{display:grid;grid-template-columns:minmax(200px,1fr) 90px 135px 105px;gap:8px;align-items:center}
+.pf-tiktok-head{padding:8px 10px;font-size:12px}
+.pf-tiktok-head button{justify-self:center;width:max-content;white-space:nowrap;padding:7px 10px;font-size:12px}
+.pf-tiktok-row{border:1px solid #dbe3ef;border-radius:9px;padding:11px 10px;margin:7px 0;font-size:13px}
+.pf-tiktok-info{min-width:0;overflow-wrap:anywhere}
+.pf-tiktok-email{font-size:12px;margin-top:5px}
+.pf-tiktok-category{text-align:center;font-size:12px;font-style:italic;overflow-wrap:anywhere}
+.pf-tiktok-center{display:flex;justify-content:center;align-items:center}
+.pf-tiktok-center input{width:17px;height:17px}
+.pf-tiktok-center button{padding:8px 10px;white-space:nowrap;font-size:12px}
+</style></head><body><div class="wrap"><p><a href="/">← Kembali ke DashboardFYEPE</a></p><h1>Phone Farm · Device List</h1><p class="muted">Monitoring dan pembukaan aplikasi Gmail/TikTok melalui ADB Panda. Login dan Switch Account dilakukan manual di aplikasi resmi. Akses sesuai role dan kepemilikan Phone Farm. Status online bila laporan diterima dalam 100 detik.</p>
+{% if can_manage_gateways %}<details class="pf-fold" id="pf-fold-2"><summary><span class="pf-heading"><span class="pf-step">1</span><span>Hubungkan Phone Farm</span></span><span class="pf-arrow" aria-hidden="true">⌄</span></summary>
+<div class="panel">
+<p class="muted">Pilih kluster untuk mengelola koneksi gateway. Refresh Token langsung membatalkan token lama; salin token baru ke config.json pada komputer kluster tersebut.</p>
+<label for="pfCluster"><b>Pilih PhoneFarm</b></label>
+<select id="pfCluster" style="display:block;width:100%;max-width:390px;padding:11px;border:1px solid #cbd5e1;border-radius:8px;margin:10px 0 18px">
+<option value="">— Pilih PhoneFarm —</option>
+{% for farm in ['PhoneFarm Anggi','PhoneFarm Fathan','PhoneFarm Mutiara'] if farm in allowed_farms %}
+<option value="{{farm}}">{{farm}}</option>
+{% endfor %}
+</select>
+{% for farm in ['PhoneFarm Anggi','PhoneFarm Fathan','PhoneFarm Mutiara'] if farm in allowed_farms %}
+<div class="pf-cluster-settings" data-cluster="{{farm}}" hidden>
+{% set matches = gateways|selectattr('name','equalto',farm)|list %}
+{% if matches %}
+{% set g = matches[0] %}
+<div class="pf-settings-box">
+<form method="post" action="/phonefarm/gateway/{{g.id}}/rename" class="pf-form-row">
+<input type="hidden" name="csrf_token" value="{{csrf_token}}">
+<label>Nama Gateway <input name="name" value="{{g.name}}" maxlength="80" required></label>
+<button type="submit">Simpan Nama</button>
+</form>
+<form method="post" action="/phonefarm/gateway/{{g.id}}/refresh-token" onsubmit="return confirm('Refresh Token akan langsung memutus koneksi gateway lama. Pastikan Anda siap memperbarui config.json di komputer {{farm}}. Lanjutkan?')" class="pf-form-row">
+<input type="hidden" name="csrf_token" value="{{csrf_token}}">
+<button type="submit" style="background:#9a3412">Refresh Token Gateway</button>
+</form>
+</div>
+{% else %}
+<form method="post" action="/phonefarm/pair" class="pf-form-row">
+<input type="hidden" name="csrf_token" value="{{csrf_token}}">
+<input type="hidden" name="name" value="{{farm}}">
+<p class="muted">Belum ada gateway dengan nama {{farm}}.</p>
+<button type="submit">Buat Token Gateway</button>
+</form>
+{% endif %}
+</div>
+{% endfor %}
+{% if pairing_token %}<div class="pf-token-box"><strong>Token Gateway Baru (hanya ditampilkan sekali)</strong><p><code id="pairtoken">{{pairing_token}}</code></p><button type="button" onclick="navigator.clipboard.writeText(document.getElementById('pairtoken').textContent)">Salin Token</button><p class="muted">Simpan token ini di config.json komputer yang sesuai. Jangan bagikan token di chat atau screenshot.</p></div>{% endif %}
+<h3 style="margin-top:26px">Gateway Terdaftar ({{gateways|length}})</h3>
+<div class="pf-gateway-list">
+{% for g in gateways %}
+<div class="pf-gateway-row"><div><b>{{loop.index}}. {{g.name}}</b><p class="muted" style="margin:5px 0 0">Terakhir terhubung: {{g.last_seen or 'Belum pernah'}}</p></div>
+<form method="post" action="/phonefarm/revoke/{{g.id}}" onsubmit="return confirm('Nonaktifkan {{g.name}}? Perangkat pada gateway ini juga akan dihapus dari daftar.')"><input type="hidden" name="csrf_token" value="{{csrf_token}}"><button class="danger" type="submit">Nonaktifkan</button></form></div>
+{% else %}<p class="muted">Belum ada gateway terdaftar.</p>{% endfor %}
+</div>
+</div></details>{% endif %}
+<details class="pf-fold" id="pf-fold-4" open><summary><span class="pf-heading"><span class="pf-step">2</span><span>Perangkat / Device List</span></span><span class="pf-arrow" aria-hidden="true">⌄</span></summary>
+<div class="panel"><p class="muted">Pilih PhoneFarm untuk melihat perangkat. Jumlah Aktif dihitung dari heartbeat terbaru.</p>
+{% for farm in ['PhoneFarm Anggi','PhoneFarm Fathan','PhoneFarm Mutiara'] if farm in allowed_farms %}
+{% set farm_gateway_ids = gateways|selectattr('name','equalto',farm)|map(attribute='id')|list %}
+{% set ns = namespace(total=0, active=0) %}
+{% for d in devices %}{% if d.gateway_id in farm_gateway_ids %}{% set ns.total = ns.total + 1 %}{% if d.online %}{% set ns.active = ns.active + 1 %}{% endif %}{% endif %}{% endfor %}
+<details class="pf-farm-fold" id="pf-farm-{{loop.index}}">
+<summary><span>{{farm}} <span class="pf-count">{{ns.active}} Aktif</span> <small class="muted">· {{ns.total}} terdaftar</small></span><span class="pf-arrow" aria-hidden="true">⌄</span></summary>
+<div class="pf-farm-content"><div class="grid">
+{% for d in devices %}{% if d.gateway_id in farm_gateway_ids %}
+<div class="device pf-device-card">
+  <div class="pf-device-title"><span class="pf-phone-icon">▯</span><div><strong>HP {{d.panda_number if d.panda_number is not none else '—'}}</strong><div class="pf-serial">Serial: {{d.serial}}</div></div></div>
+  <form class="pf-number-form" method="post" action="/phonefarm/device/number">
+    <input type="hidden" name="csrf_token" value="{{csrf_token}}"><input type="hidden" name="gateway_id" value="{{d.gateway_id}}"><input type="hidden" name="serial" value="{{d.serial}}">
+    <label for="panda-{{d.gateway_id}}-{{d.serial}}">Nomor Panda</label>
+    <div class="pf-number-controls"><input id="panda-{{d.gateway_id}}-{{d.serial}}" type="number" min="1" max="100" name="panda_number" value="{{d.panda_number if d.panda_number is not none else ''}}" placeholder="Nomor" {% if d.panda_number is not none %}readonly{% endif %} required>
+      <button class="pf-save" type="submit" {% if d.panda_number is not none %}disabled{% endif %}>Simpan</button><button class="pf-edit" type="button" onclick="pfEditPanda(this)" {% if d.panda_number is none %}disabled{% endif %}>✎ Edit</button></div>
+  </form>
+  <div class="pf-device-model">▯ &nbsp;{{d.model or 'Android'}} · {{d.gateway_name}}</div>
+  <div class="pf-device-status"><span class="{{'online' if d.online else 'offline'}}">● {{'ONLINE' if d.online else 'OFFLINE'}}</span><span class="pf-battery">▣ {{d.battery if d.battery is not none else '—'}}{% if d.battery is not none %}%{% endif %}</span></div>
+  <div class="pf-lastseen">◷ &nbsp;Terakhir: <time class="pf-wib" data-utc="{{d.last_seen or ''}}">{{d.last_seen or 'Belum tersedia'}}</time></div>
+  <div class="pf-device-actions"><form method="post" action="/phonefarm/command"><input type="hidden" name="csrf_token" value="{{csrf_token}}"><input type="hidden" name="gateway_id" value="{{d.gateway_id}}"><input type="hidden" name="serial" value="{{d.serial}}"><button type="submit" name="action" value="HOME" {% if not d.online %}disabled title="HP offline"{% endif %}>Home</button><button type="submit" name="action" value="BACK" {% if not d.online %}disabled title="HP offline"{% endif %}>Back</button></form><button type="button" onclick='showScreen({{d.gateway_id|tojson}},{{d.serial|tojson}})' {% if not d.online %}disabled title="HP offline"{% endif %}>Lihat Layar</button></div>
+  <div class="pf-tier-list">{% for tier in range(1,11) %}{% set account = gmail_tier_rows|selectattr('gateway_id','equalto',d.gateway_id)|selectattr('serial','equalto',d.serial)|selectattr('tier','equalto',tier)|list %}<div class="pf-tier-row"><span class="pf-tier-dot pf-dot-{{(tier-1)%5}}"></span><strong>Tier {{tier}}</strong>{% if account and account[0].email %}<span class="pf-tier-email pf-tier-email-filled" tabindex="0" title="Geser horizontal untuk melihat email lengkap">{{account[0].email}}</span><button type="button" class="pf-email-copy" data-email="{{account[0].email|e}}" aria-label="Salin email Tier {{tier}}" title="Salin alamat email"><svg width="13" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg></button>{% else %}<span class="pf-tier-email pf-tier-email-empty">Belum ada email</span>{% endif %}</div>{% endfor %}</div>
+</div>
+{% endif %}{% endfor %}
+</div>{% if ns.total == 0 %}<p class="muted">Belum ada perangkat terdaftar pada {{farm}}.</p>{% endif %}</div>
+</details>
+{% endfor %}
+</div></details><details class="pf-fold" id="pf-fold-1" open><summary><span class="pf-heading"><span class="pf-step">3</span><span>Operasi PhoneFarm</span></span><span class="pf-arrow" aria-hidden="true">⌄</span></summary>
+<div class="panel"><h2>Operasi Akun dan Perangkat</h2><p class="muted">Alamat Gmail disimpan di database sesuai nomor Panda dan serial ADB. Password dan verifikasi login dilakukan pada HP resmi.</p>
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}<div role="status" aria-live="polite" style="margin:12px 0">
+{% for category, message in messages %}<div style="padding:12px 15px;margin:8px 0;border-radius:8px;border:1px solid {{ '#f2b8b5' if category == 'error' else '#a6dfbd' }};background:{{ '#fff1f0' if category == 'error' else '#edfff4' }};color:{{ '#8b1e1e' if category == 'error' else '#166534' }}">{{ message }}</div>{% endfor %}
+</div>{% endif %}{% endwith %}
+<details class="pf-farm-fold" open><summary><span class="pf-login-heading"><span class="pf-app-icon pf-gmail-icon" aria-hidden="true"><svg viewBox="0 0 48 48" width="30" height="30" role="img" aria-label="Gmail"><path fill="#4285F4" d="M4 12v26h8V20z"/><path fill="#34A853" d="M36 20v18h8V12z"/><path fill="#EA4335" d="M4 12l4-4 16 12L40 8l4 4-20 16z"/><path fill="#C5221F" d="M4 12l8 6v8L4 20z"/><path fill="#FBBC04" d="M36 18l8-6v8l-8 6z"/></svg></span><span><b>LOGIN GMAIL</b><small>1 HP Aktif bisa s.d. 10 Akun Gmail</small></span></span><span class="pf-arrow">⌄</span></summary><div class="pf-farm-content">
+<p class="muted">Isi alamat Gmail sesuai perangkat. Password dan verifikasi dilakukan langsung melalui remote HP.</p>
+<div style="display:grid;gap:16px">
+<section><b>1. Pilih Metode Input Gmail</b>
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin:10px 0">
+<button type="button" id="pfGmailTabSingle" onclick="pfGmailMode('single')">Input Gmail Satu per Satu</button>
+<button type="button" id="pfGmailTabBulk" onclick="pfGmailMode('bulk')">Input Gmail Sekaligus</button></div></section>
+<form method="post" action="/phonefarm/gmail/assign" enctype="multipart/form-data" id="pfGmailForm" style="display:grid;gap:16px">
+<input type="hidden" name="csrf_token" value="{{csrf_token}}">
+<input type="hidden" name="mode" id="pfGmailMode" value="single">
+<section><b>2. Pilih PhoneFarm</b>
+<div style="margin:10px 0"><select name="gateway_id" id="pfGmailGateway" required onchange="pfUpdateHp()"><option value="">— Pilih PhoneFarm —</option>{% for g in gateways %}<option value="{{g.id}}">{{g.name}}</option>{% endfor %}</select></div>
+<div id="pfGmailSingle"><p class="muted">Isi alamat Gmail pada HP yang dituju. Kolom kosong dilewati.</p>
+<div id="pfGmailDeviceRows" style="display:grid;gap:8px"></div></div>
+<div id="pfGmailBulk" style="display:none"><label>Unggah TXT/CSV (nomor Panda,alamat Gmail)
+<input type="file" name="gmail_file" accept=".txt,.csv"></label>
+<p class="muted">Contoh: 1,akun1@gmail.com (satu baris per HP). Maksimal 100 baris / 100 KB.</p></div></section>
+<section><b>3. Kondisi Gmail</b>
+<div style="display:grid;gap:8px;margin:10px 0">
+<label><input type="radio" name="gmail_operation" value="input" checked onchange="pfGmailCondition()"> Gmail Kosong (Mulai Tier 1)</label>
+<label><input type="radio" name="gmail_operation" value="add" onchange="pfGmailCondition()"> Gmail Tambah Akun (Input Nomor Tier)</label>
+</div>
+<div id="pfGmailTierBox" style="display:none"><label>Nomor Tier
+<select name="tier" id="pfGmailTier" onchange="pfUpdateHp()">{% for t in range(1,11) %}<option value="{{t}}" {% if t==2 %}selected{% endif %}>Tier {{t}}</option>{% endfor %}</select></label></div>
+<p class="muted" id="pfGmailTierNote">Tier tujuan: Tier 1.</p></section>
+<div><button type="submit" id="pfGmailSubmit" onclick="return pfConfirmGmailSend()">KIRIM GMAIL</button></div>
+<p class="muted">Hanya HP yang diisi yang menerima perintah. Login password tetap manual melalui remote HP.</p>
+</form>
+<div id="pf-gmail-saved" style="margin-top:22px;scroll-margin-top:90px">
+<h3>4. Gmail Tersimpan</h3>
+<p class="muted">Pilih PhoneFarm, lalu buka Tier 1–10. HP diurutkan berdasarkan nomor Panda. Add menyimpan Gmail dan mengirim perintah ke HP yang dipilih.</p>
+{% for g in gateways %}
+<details class="pf-tier-farm" style="border:1px solid #dbe3ef;border-radius:10px;padding:12px;margin:10px 0" {% if loop.first %}open{% endif %}>
+<summary style="cursor:pointer;font-weight:700">{{g.name}} · {{gmail_tier_rows|selectattr('gateway_id','equalto',g.id)|list|length}} akun</summary>
+<div style="margin:12px 0">
+{% for t in range(1,11) %}
+{% set tier_items=gmail_tier_rows|selectattr('gateway_id','equalto',g.id)|selectattr('tier','equalto',t)|list %}
+<details style="border:1px solid #dbe3ef;border-radius:8px;padding:10px;margin:8px 0" {% if t==1 %}open{% endif %}>
+<summary style="cursor:pointer;font-weight:700">Tier {{t}} · {{tier_items|length}} akun</summary>
+<details style="margin:10px 0 12px 24px"><summary style="cursor:pointer;color:#2563eb;font-weight:700">+ Add Gmail (No HP dan alamat email)</summary>
+<form method="post" action="/phonefarm/gmail/assign" onsubmit="return confirm('Simpan Gmail dan kirim perintah ke HP ini?')" style="display:flex;flex-wrap:wrap;gap:12px;align-items:end;margin:10px 0;max-width:850px">
+<input type="hidden" name="csrf_token" value="{{csrf_token}}"><input type="hidden" name="gateway_id" value="{{g.id}}">
+<input type="hidden" name="mode" value="single"><input type="hidden" name="gmail_operation" value="add"><input type="hidden" name="tier" value="{{t}}">
+<label style="display:flex;flex:1 1 230px;min-width:200px;flex-direction:column;gap:6px">No HP <select name="panda_number" required style="width:100%;box-sizing:border-box;padding:10px;border:1px solid #cbd5e1;border-radius:8px"><option value="">— Pilih HP —</option>{% for d in devices|selectattr('gateway_id','equalto',g.id)|selectattr('panda_number','number')|sort(attribute='panda_number') %}<option value="{{d.panda_number}}">HP {{d.panda_number}} · {{d.serial}}</option>{% endfor %}</select></label>
+<label style="display:flex;flex:1 1 230px;min-width:200px;flex-direction:column;gap:6px">Alamat Gmail <input type="email" name="email" required maxlength="254" placeholder="nama@example.com" style="width:100%;box-sizing:border-box"></label>
+<button type="submit">Add</button></form></details>
+<div style="overflow-x:auto;margin-top:12px"><table style="width:100%;text-align:left">
+<tr><th>HP</th><th>Serial</th><th>Alamat Gmail</th><th>Aksi</th></tr>
+{% set ns=namespace(found=false) %}
+{% for d in devices|selectattr('gateway_id','equalto',g.id)|selectattr('panda_number','number')|sort(attribute='panda_number') %}
+{% for r in tier_items if r.serial==d.serial %}
+{% set ns.found=true %}
+<tr><td>{{d.panda_number if d.panda_number is not none else '—'}}</td><td><code>{{d.serial}}</code></td><td>{{r.email}}</td>
+<td><div style="display:flex;gap:6px;flex-wrap:wrap">
+<button type="button" onclick="this.parentNode.nextElementSibling.hidden=!this.parentNode.nextElementSibling.hidden">Edit</button>
+<form method="post" action="/phonefarm/gmail/clear" style="margin:0" onsubmit="return confirm('Clear Gmail Tier {{t}} HP {{d.panda_number}}?')">
+<input type="hidden" name="csrf_token" value="{{csrf_token}}"><input type="hidden" name="mode" value="single"><input type="hidden" name="gateway_id" value="{{g.id}}"><input type="hidden" name="serial" value="{{d.serial}}"><input type="hidden" name="tier" value="{{t}}"><button type="submit" class="danger">Clear</button></form></div>
+<form hidden method="post" action="/phonefarm/gmail/edit" style="margin-top:8px">
+<input type="hidden" name="csrf_token" value="{{csrf_token}}"><input type="hidden" name="gateway_id" value="{{g.id}}"><input type="hidden" name="serial" value="{{d.serial}}"><input type="hidden" name="tier" value="{{t}}"><input type="email" name="email" value="{{r.email}}" required maxlength="254"><button type="submit">Simpan</button></form>
+</td></tr>
+{% endfor %}{% endfor %}
+{% if not ns.found %}<tr><td colspan="4" class="muted">Belum ada Gmail di Tier {{t}}.</td></tr>{% endif %}
+</table></div>
+
+</details>
+{% endfor %}
+</div></details>
+{% endfor %}
+</div>
+</div>
+
+</div></details>
+<details class="pf-farm-fold" style="margin-top:12px" open><summary><span class="pf-login-heading"><span class="pf-app-icon pf-tiktok-icon" aria-hidden="true">♪</span><span><b>LOGIN TIKTOK</b><small>1 HP Aktif bisa s.d. 10 Akun TikTok</small></span></span><span class="pf-arrow">⌄</span></summary>
+<div class="pf-farm-content">
+<p class="muted">Pilih PhoneFarm, kemudian Tier Gmail. Daftar HP aktif dan alamat Gmail tersimpan akan ditampilkan. Tombol Buka TikTok mengirim perintah ke HP yang dipilih; pergantian akun dilakukan melalui aplikasi resmi.</p>
+<div style="display:flex;flex-wrap:wrap;gap:14px;align-items:end;margin:14px 0">
+<label style="display:grid;gap:6px;font-weight:700">1. Pilih PhoneFarm <select id="pfTikTokFarm" onchange="pfTikTokRender()" style="min-width:230px;padding:10px;border:1px solid #cbd5e1;border-radius:8px"><option value="">— Pilih PhoneFarm —</option>{% for g in gateways if g.name in allowed_farms %}<option value="{{g.id}}">{{g.name}}</option>{% endfor %}</select></label>
+<label style="display:grid;gap:6px;font-weight:700">2. Pilih Tier <select id="pfTikTokTier" onchange="pfTikTokRender()" style="min-width:150px;padding:10px;border:1px solid #cbd5e1;border-radius:8px">{% for t in range(1,11) %}<option value="{{t}}">Tier {{t}}</option>{% endfor %}</select></label>
+
+</div><small id="pfTikTokAllStatus" class="muted" role="status" aria-live="polite"></small><h3 id="pfTikTokTitle" style="margin:18px 0 10px">Pilih PhoneFarm untuk menampilkan HP aktif</h3>
+<div class="pf-tiktok-table-scroll"><div class="pf-tiktok-table">
+<div class="pf-tiktok-head"><b>HP / Gmail</b><b>Kategori</b><button type="button" id="pfTikTokSelected" onclick="pfTikTokOpenSelected()" disabled>Selected TikTok</button><button type="button" id="pfTikTokAll" onclick="pfTikTokOpenAll()" disabled>TikTok All</button></div>
+<div id="pfTikTokList" role="status" aria-live="polite"></div>
+</div></div>
+<p class="muted" style="margin-top:14px">Perintah OPEN_TIKTOK hanya membuka TikTok pada HP. Membuka menu Beralih Akun tidak dapat dijamin tanpa dukungan dan pengujian gateway ADB sesuai versi aplikasi TikTok.</p>
+</div></details>
+</div></details>
+<script>
+const pfGmailDevices={{devices|tojson}},pfSavedMails={{gmail_email_lookup|tojson}},pfTierMails={{gmail_tier_rows|tojson}};
+const pfTikTokAccounts={{tiktok_accounts|default([])|tojson}};
+const pfTikTokSelection=new Set();
+function pfTikTokRows(){
+ const gid=document.getElementById('pfTikTokFarm').value,tier=Number(document.getElementById('pfTikTokTier').value);
+ return pfGmailDevices.filter(d=>String(d.gateway_id)===String(gid)&&d.online&&d.panda_number!=null).sort((a,b)=>Number(a.panda_number)-Number(b.panda_number)).map(d=>{
+  const stored=pfTierMails.find(r=>String(r.gateway_id)===String(gid)&&String(r.serial)===String(d.serial)&&Number(r.tier)===tier);
+  return {...d,email:stored?.email||'',key:String(gid)+':'+d.serial+':'+tier};
+ });
+}
+function pfTikTokRender(){
+ const gid=document.getElementById('pfTikTokFarm').value,tier=Number(document.getElementById('pfTikTokTier').value);
+ const farm=document.getElementById('pfTikTokFarm'),wrap=document.getElementById('pfTikTokList');
+ wrap.replaceChildren();pfTikTokSelection.clear();
+ const rows=gid?pfTikTokRows():[];
+ document.getElementById('pfTikTokTitle').textContent=gid?farm.options[farm.selectedIndex].textContent+' — Tier '+tier+' · '+rows.length+' HP aktif':'Pilih PhoneFarm untuk menampilkan HP aktif';
+ document.getElementById('pfTikTokAll').disabled=!rows.some(d=>d.email);
+ document.getElementById('pfTikTokSelected').disabled=true;
+ if(!rows.length){wrap.textContent=gid?'Belum ada HP aktif pada PhoneFarm ini.':'';return}
+ rows.forEach(d=>{
+  const row=document.createElement('div');row.className='pf-tiktok-row';
+  const info=document.createElement('div');info.className='pf-tiktok-info';
+  const line=document.createElement('div');const b=document.createElement('b');b.textContent='HP '+d.panda_number;
+  const serial=document.createElement('span');serial.className='muted';serial.textContent=' · Serial: '+d.serial;line.append(b,serial);
+  const mail=document.createElement('div');mail.className='pf-tiktok-email';mail.textContent='Gmail: '+(d.email||'Belum terisi pada Tier '+tier);info.append(line,mail);
+  const category=document.createElement('div');category.className='pf-tiktok-category';
+  const account=pfTikTokAccounts.find(a=>String(a.email||a.gmail||'').toLowerCase()===d.email.toLowerCase()&&d.email);
+  category.textContent=account?(account.category||account.kategori||'—'):'—';
+  const checkcell=document.createElement('div');checkcell.className='pf-tiktok-center';
+  const check=document.createElement('input');check.type='checkbox';check.disabled=!d.email;check.setAttribute('aria-label','Pilih HP '+d.panda_number);
+  check.checked=pfTikTokSelection.has(d.key);
+  check.onchange=()=>{if(check.checked)pfTikTokSelection.add(d.key);else pfTikTokSelection.delete(d.key);document.getElementById('pfTikTokSelected').disabled=!pfTikTokSelection.size||pfTikTokAllBusy};
+  checkcell.append(check);
+  const action=document.createElement('div');action.className='pf-tiktok-center';
+  const button=document.createElement('button');button.type='button';button.textContent='Buka TikTok';button.disabled=!d.email;
+  button.onclick=()=>pfTikTokSend([d]);action.append(button);
+  row.append(info,category,checkcell,action);wrap.append(row);
+ });
+}
+
+function pfGmailMode(mode){
+ document.getElementById('pfGmailMode').value=mode;
+ document.getElementById('pfGmailSingle').style.display=mode==='single'?'block':'none';
+ document.getElementById('pfGmailBulk').style.display=mode==='bulk'?'block':'none';
+ document.querySelector('#pfGmailBulk input[type=file]').required=mode==='bulk';
+ document.querySelectorAll('#pfGmailDeviceRows input').forEach(i=>i.disabled=mode!=='single');
+ document.getElementById('pfGmailTabSingle').style.background=mode==='single'?'#2563eb':'#64748b';
+ document.getElementById('pfGmailTabBulk').style.background=mode==='bulk'?'#2563eb':'#64748b';
+}
+function pfGmailCondition(){
+ const add=document.querySelector('#pfGmailForm input[name="gmail_operation"]:checked').value==='add';
+ document.getElementById('pfGmailTierBox').style.display=add?'block':'none';
+ document.getElementById('pfGmailTier').disabled=!add;
+ document.getElementById('pfGmailTierNote').textContent=add?'Tier tujuan sesuai pilihan. Data tier lain tetap tersimpan.':'Tier tujuan: Tier 1.';
+ pfUpdateHp();
+}
+function pfUpdateHp(){
+ const gid=document.getElementById('pfGmailGateway').value,wrap=document.getElementById('pfGmailDeviceRows');wrap.replaceChildren();
+ const tier=Number(document.getElementById('pfGmailTier').disabled?'1':document.getElementById('pfGmailTier').value);
+ const rows=pfGmailDevices.filter(d=>String(d.gateway_id)===String(gid)&&d.panda_number!=null&&d.online).sort((a,b)=>a.panda_number-b.panda_number);
+ if(!rows.length){const p=document.createElement('p');p.className='muted';p.textContent='Tidak ada HP aktif pada PhoneFarm ini.';wrap.append(p);return;}
+ rows.forEach(d=>{
+   const line=document.createElement('div');line.style.cssText='display:flex;align-items:center;gap:8px;flex-wrap:wrap;border:1px solid #dbe3ef;border-radius:8px;padding:10px';
+   const label=document.createElement('label');label.textContent='HP '+String(d.panda_number).padStart(2,'0')+' · '+d.serial;label.style.minWidth='185px';
+   const stored=pfTierMails.find(r=>String(r.gateway_id)===String(gid)&&r.serial===d.serial&&Number(r.tier)===tier);
+   const email=document.createElement('input');email.type='email';email.placeholder='Alamat email HP '+d.panda_number;email.style.cssText='flex:1;min-width:190px';
+   if(stored&&stored.email){
+     email.value=stored.email;email.readOnly=true;email.disabled=true;
+     email.style.background='#f1f5f9';email.style.color='#64748b';
+     email.title='Gmail sudah tersimpan pada Tier '+tier+'. Ubah melalui bagian 4. Gmail Tersimpan.';
+     const status=document.createElement('span');status.textContent='Sudah terisi';status.style.cssText='color:#067647;font-size:12px;font-weight:700;white-space:nowrap';
+     line.append(label,email,status);
+   }else{
+     email.name='email';
+     const num=document.createElement('input');num.type='hidden';num.name='panda_number';num.value=d.panda_number;
+     const btn=document.createElement('button');btn.type='button';btn.textContent='KIRIM GMAIL';btn.style.padding='8px';
+     btn.onclick=()=>{if(!email.value.trim()||!email.checkValidity()){email.reportValidity();return;}pfSendOne(d.panda_number,email.value)};
+     line.append(label,num,email,btn);
+   }
+   wrap.append(line);
+ });
+}
+function pfSendOne(number,email,operation){
+ if(!confirm('Kirim perintah ke HP '+number+'?'))return;
+ const form=document.getElementById('pfGmailForm'),fd=new FormData();
+ fd.append('csrf_token',form.querySelector('[name=csrf_token]').value);fd.append('mode','single');fd.append('gateway_id',document.getElementById('pfGmailGateway').value);
+ fd.append('panda_number',number);fd.append('email',email);fd.append('gmail_operation',document.querySelector('#pfGmailForm input[name="gmail_operation"]:checked').value);fd.append('tier',document.getElementById('pfGmailTier').disabled?'1':document.getElementById('pfGmailTier').value);
+ const temp=document.createElement('form');temp.method='post';temp.action='/phonefarm/gmail/assign';temp.style.display='none';
+ for(const [k,v] of fd.entries()){const i=document.createElement('input');i.type='hidden';i.name=k;i.value=v;temp.append(i)}
+ document.body.append(temp);temp.submit();
+}
+function pfConfirmGmailSend(){
+ const mode=document.getElementById('pfGmailMode').value;
+ if(mode==='single'){
+   const emails=[...document.querySelectorAll('#pfGmailDeviceRows input[name=email]')].filter(i=>i.value.trim());
+   if(!emails.length){alert('Isi minimal satu alamat Gmail pada HP aktif.');return false;}
+   if(emails.some(i=>!i.checkValidity())){emails.find(i=>!i.checkValidity()).reportValidity();return false;}
+   return confirm('Kirim '+emails.length+' perintah pembukaan Login Google ke HP yang emailnya terisi?');
+ }
+ return confirm('Kirim perintah pembukaan Login Google ke semua HP yang tercantum dalam file TXT/CSV?');
+}
+pfGmailCondition();pfGmailMode('single');
+</script>
+<details class="pf-fold" id="pf-fold-5"><summary><span class="pf-heading"><span class="pf-step">4</span><span>Riwayat Perintah PhoneFarm</span></span><span class="pf-arrow" aria-hidden="true">⌄</span></summary><div class="panel"><h2>Riwayat perintah terakhir</h2><p class="muted">Gateway memeriksa antrean perintah secara berkala. Monitoring baterai tetap setiap 30 detik.</p><div style="overflow-x:auto"><table style="width:100%;text-align:left;border-collapse:collapse"><tr><th>Waktu</th><th>Serial</th><th>Perintah</th><th>Status</th><th>Hasil</th></tr>{% for cmd in recent_commands %}<tr><td>{{cmd.created_at}}</td><td>{{cmd.serial}}</td><td>{{cmd.action}}</td><td>{{cmd.status}}</td><td>{{cmd.result or '—'}}</td></tr>{% else %}<tr><td colspan="5">Belum ada perintah</td></tr>{% endfor %}</table></div></div></details><p class="muted">Status perintah diperbarui otomatis setiap 3 detik selama masih menunggu. Nomor serial belum dipetakan ke slot Panda.</p></div><div class="panel" id="multiRemote" style="display:none"><h2>Remote Control · Multi HP</h2><p class="muted">Pratinjau manual (tanpa screenshot otomatis). Pilih maksimal 4 HP; klik/geser layar untuk mengendalikan HP masing-masing. Jangan digunakan untuk aktivitas sensitif.</p><div class="remote-grid" id="remoteGrid"></div><p class="muted" id="remoteNotice">Klik Lihat Layar pada kartu HP untuk membuka panel ini.</p></div>
+<style>.remote-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}.remote-card{border:1px solid #cbd5e1;border-radius:12px;padding:10px;background:#fff}.remote-card img{display:block;width:100%;aspect-ratio:9/16;object-fit:contain;background:#101828;touch-action:none;user-select:none;cursor:crosshair}.remote-card .actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.remote-card button{padding:7px 10px}.remote-status{font-size:12px;color:#475467;min-height:28px}</style>
+<script>
+const csrf={{csrf_token|tojson}}, remotes=new Map();
+function showScreen(gid,serial){addRemote(gid,serial);document.getElementById('multiRemote').scrollIntoView({behavior:'smooth',block:'start'});}
+function addRemote(gid,serial){const key=gid+':'+serial;if(remotes.has(key)){remotes.get(key).card.scrollIntoView({behavior:'smooth',block:'center'});return;}if(remotes.size>=4){alert('Maksimal 4 HP dalam tahap uji. Tutup salah satu HP dahulu.');return;}
+ const card=document.createElement('div');card.className='remote-card';
+ const heading=document.createElement('b');heading.textContent='HP · '+serial;card.append(heading);
+ const img=document.createElement('img');img.alt='Layar '+serial;img.draggable=false;card.append(img);
+ const status=document.createElement('div');status.className='remote-status';status.textContent='Menghubungkan...';card.append(status);
+ const actions=document.createElement('div');actions.className='actions';card.append(actions);
+ const item={gid,serial,card,img,status,active:true,lastUpdate:'',timer:null,drag:null,command:null,requesting:false,lastShotAt:0,pendingInput:null,inputBusy:false};remotes.set(key,item);
+ for(const [label,action] of [['Home','HOME'],['Back','BACK'],['Segarkan','SCREENSHOT']]){const b=document.createElement('button');b.textContent=label;b.onclick=()=>action==='SCREENSHOT'?sendRemote(item,action):queueInput(item,action);actions.append(b)}
+ const close=document.createElement('button');close.textContent='Tutup';close.style.background='#475467';close.onclick=()=>{item.active=false;clearInterval(item.timer);remotes.delete(key);card.remove();document.getElementById('remoteNotice').textContent='Aktif '+remotes.size+' / 4 HP'};actions.append(close);
+ // Hitung koordinat terhadap gambar yang benar-benar terlihat (object-fit: contain).
+ function pointOnImage(e){
+   const r=img.getBoundingClientRect();
+   const iw=img.naturalWidth||r.width,ih=img.naturalHeight||r.height;
+   const scale=Math.min(r.width/iw,r.height/ih);
+   const w=iw*scale,h=ih*scale,left=r.left+(r.width-w)/2,top=r.top+(r.height-h)/2;
+   const x=(e.clientX-left)/w,y=(e.clientY-top)/h;
+   if(!Number.isFinite(x)||!Number.isFinite(y)||x<0||x>1||y<0||y>1)return null;
+   return {x:Math.max(0,Math.min(1,x)),y:Math.max(0,Math.min(1,y))};
+ }
+ img.addEventListener('pointerdown',e=>{
+   const p=pointOnImage(e);if(!p)return;
+   e.preventDefault();img.setPointerCapture(e.pointerId);
+   item.drag={...p,at:Date.now(),pointerId:e.pointerId};
+ });
+ img.addEventListener('pointercancel',()=>{item.drag=null});
+ img.addEventListener('pointerup',e=>{
+   if(!item.drag||item.drag.pointerId!==e.pointerId)return;
+   e.preventDefault();const d=item.drag;item.drag=null;
+   const p=pointOnImage(e);if(!p)return;
+   if(Math.hypot(p.x-d.x,p.y-d.y)<.025)queueInput(item,'TAP',{x:p.x,y:p.y});
+   else queueInput(item,'SWIPE',{x:d.x,y:d.y,x2:p.x,y2:p.y,duration:Math.max(150,Math.min(800,Date.now()-d.at))});
+ });
+ document.getElementById('remoteGrid').append(card);item.timer=setInterval(()=>{if(item.active&&!document.hidden)pollRemote(item)},1500);pollRemote(item);document.getElementById('remoteNotice').textContent='Aktif '+remotes.size+' / 4 HP';}
+ // Satu interaksi tertunda per HP. Interaksi terbaru menggantikan yang belum terkirim.
+ function queueInput(item,action,extra={}){
+   if(!item.active)return;
+   item.pendingInput={action,extra};
+   item.status.textContent=action+' menunggu giliran (prioritas kontrol)';
+   if(!item.command&&!item.requesting&&!item.inputBusy)void flushInput(item);
+ }
+ async function flushInput(item){
+   if(!item.active||!item.pendingInput||item.command||item.requesting||item.inputBusy)return;
+   item.inputBusy=true;
+   try{
+     const next=item.pendingInput;item.pendingInput=null;
+     await sendRemote(item,next.action,next.extra);
+   }finally{item.inputBusy=false}
+ }
+ async function sendRemote(item,action,extra={}){
+   if(!item.active||item.command||item.requesting){if(action!=='SCREENSHOT')item.status.textContent='Menunggu perintah sebelumnya selesai';return false}
+   item.requesting=true;
+   try{
+     const r=await fetch('/phonefarm/remote/action',{method:'POST',headers:{'Content-Type':'application/json','X-Requested-With':'XMLHttpRequest'},body:JSON.stringify({csrf_token:csrf,gateway_id:item.gid,serial:item.serial,action,...extra})});
+     const data=await r.json();
+     if(!r.ok||!data.ok){item.status.textContent=data.message||'Perintah gagal';return false}
+     if(!data.command_id){item.status.textContent='Server belum mengembalikan ID perintah';return false}
+     item.command={id:data.command_id,action,started:Date.now()};item.status.textContent=action+' sedang diproses';return true;
+   }catch(e){item.status.textContent='Koneksi: '+e.message;return false}
+   finally{item.requesting=false}
+ }
+ async function pollRemote(item){
+   if(!item.active||item.polling)return;item.polling=true;
+   try{
+     if(item.command){
+       const r=await fetch('/phonefarm/remote/command/'+encodeURIComponent(item.command.id),{cache:'no-store'});
+       if(!r.ok)throw new Error('Status perintah tidak tersedia');
+       const d=await r.json();
+       if(['DONE','FAILED','EXPIRED'].includes(d.status)){
+         const action=item.command.action;item.command=null;
+         item.status.textContent=d.status==='DONE'?action+' selesai':(d.result||'Perintah gagal');
+         if(action==='SCREENSHOT'&&d.status==='DONE')await loadRemoteImage(item);
+         if(item.pendingInput)await flushInput(item);
+       }else if(Date.now()-item.command.started>105000){item.command=null;item.status.textContent='Perintah terlalu lama; silakan coba lagi';if(item.pendingInput)await flushInput(item)}
+       return;
+     }
+     if(item.pendingInput){await flushInput(item);return}
+     if(false&&!item.requesting&&!item.inputBusy&&Date.now()-item.lastShotAt>=4500){item.lastShotAt=Date.now();await sendRemote(item,'SCREENSHOT')}
+   }catch(e){item.status.textContent='Pemeriksaan antrean gagal: '+e.message}
+   finally{item.polling=false}
+ }
+ async function loadRemoteImage(item){
+   const u='/phonefarm/screen/status/'+encodeURIComponent(item.gid)+'/'+encodeURIComponent(item.serial);
+   const r=await fetch(u,{cache:'no-store'});if(!r.ok)return;
+   const d=await r.json();if(item.active&&d.updated_at&&d.updated_at!==item.lastUpdate){
+     item.lastUpdate=d.updated_at;item.img.src='/phonefarm/screen/'+encodeURIComponent(item.gid)+'/'+encodeURIComponent(item.serial)+'?t='+Date.now();item.status.textContent='Gambar diperbarui '+new Date().toLocaleTimeString('id-ID')}
+ }
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)for(const item of remotes.values())pollRemote(item)});
+</script><script>document.querySelectorAll('.pf-fold').forEach(function(d){var k='pfFold:'+d.id;try{var v=sessionStorage.getItem(k);if(v!==null)d.open=(v==='1');d.addEventListener('toggle',function(){sessionStorage.setItem(k,d.open?'1':'0')});}catch(e){}});</script><style>.pf-cluster-settings[hidden]{display:none!important}.pf-form-row{display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin:12px 0}.pf-form-row label{display:flex;flex-direction:column;gap:7px}.pf-settings-box{padding:12px;border:1px solid #e1e7ef;border-radius:10px}.pf-token-box{padding:14px;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;margin-top:14px;overflow-wrap:anywhere}.pf-gateway-row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 0;border-bottom:1px solid #e5eaf2}.pf-gateway-row button{white-space:nowrap}</style>
+<script>document.addEventListener('DOMContentLoaded',()=>{const s=document.getElementById('pfCluster');if(!s)return;const items=[...document.querySelectorAll('.pf-cluster-settings')];function update(){items.forEach(el=>el.hidden=el.dataset.cluster!==s.value)}s.addEventListener('change',update);update()})</script>
+<script>
+document.querySelectorAll('.pf-farm-fold').forEach(function(d){
+  var key='pfFarmGroup:'+d.id;
+  try{
+    var value=sessionStorage.getItem(key);
+    if(value!==null)d.open=(value==='1');
+    d.addEventListener('toggle',function(){sessionStorage.setItem(key,d.open?'1':'0')});
+  }catch(e){}
+});
+</script><style>
+/* Device List: email lengkap dapat digeser, dipilih, dan disalin. */
+.pf-tier-row{overflow:hidden;gap:6px}
+.pf-tier-row>strong{flex:0 0 auto}
+.pf-tier-email-filled{flex:1 1 auto;display:block;min-width:0;overflow-x:auto;overflow-y:hidden;text-overflow:clip;white-space:nowrap;color:#1769ff;font-weight:500;user-select:text;-webkit-user-select:text;cursor:text;scrollbar-width:thin;scrollbar-color:#b7c8e5 transparent;padding:5px 0}
+.pf-tier-email-filled::-webkit-scrollbar{height:4px}
+.pf-tier-email-filled::-webkit-scrollbar-thumb{background:#b7c8e5;border-radius:5px}
+.pf-tier-email-filled:focus{outline:1px solid #93b9ff;outline-offset:1px;border-radius:3px}
+.pf-tier-email-empty{flex:1 1 auto;min-width:0;color:#667085}
+.pf-email-copy{flex:0 0 auto;padding:4px 5px!important;border:1px solid #c6d8ff!important;background:#fff!important;color:#1769ff!important;border-radius:5px!important;font-size:10px!important;line-height:1.3;cursor:pointer}
+.pf-email-copy:hover{background:#eaf2ff!important}
+</style>
+<script>
+document.addEventListener('click',async function(e){
+ const button=e.target.closest('.pf-email-copy');if(!button)return;
+ const email=button.dataset.email;if(!email)return;
+ try{
+   if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(email)}
+   else {const temp=document.createElement('textarea');temp.value=email;temp.style.position='fixed';temp.style.left='-9999px';document.body.appendChild(temp);temp.select();const ok=document.execCommand('copy');temp.remove();if(!ok)throw new Error('Copy tidak didukung')}
+   button.title='Tersalin';button.style.color='#059669';setTimeout(()=>{button.title='Salin alamat email';button.style.color=''},1400);
+ }catch(err){window.prompt('Salin alamat email:',email)}
+});
+</script>
+<style>
+/* Email: one quiet row, scroll the address only. */
+.pf-tier-row{gap:6px;padding:12px 8px}
+.pf-tier-email-filled{scrollbar-width:none!important;overscroll-behavior-x:contain;touch-action:pan-x;flex:1 1 0;min-width:0;color:#1769ff!important}
+.pf-tier-email-filled::-webkit-scrollbar{display:none}
+.pf-email-copy{display:inline-flex;align-items:center;justify-content:center;flex:0 0 20px;width:20px;height:24px;padding:2px!important;border:0!important;background:transparent!important;color:#667085!important}
+.pf-email-copy:hover{color:#1769ff!important;background:transparent!important}
+.pf-tier-email-empty{color:#667085!important}
+.pf-save-status{font-size:11px;color:#059669;margin-left:5px}
+</style>
+<script>
+/* Prevent a full-page navigation after saving Panda number. */
+document.querySelectorAll('form[action="/phonefarm/device/number"]').forEach(form=>{
+ form.addEventListener('submit',async e=>{
+  e.preventDefault();const save=form.querySelector('.pf-save');if(save.disabled)return;
+  const status=form.querySelector('.pf-save-status')||document.createElement('span');status.className='pf-save-status';if(!status.parentNode)form.appendChild(status);
+  save.disabled=true;status.textContent='Menyimpan…';
+  try{const response=await fetch(form.action,{method:'POST',body:new FormData(form),headers:{'X-Requested-With':'XMLHttpRequest'}});
+   if(!response.ok)throw Error('HTTP '+response.status);
+   const contentType=response.headers.get('content-type')||'';
+   if(contentType.includes('application/json')){const result=await response.json();if(result.ok===false)throw Error(result.message||'Gagal menyimpan')}
+   else if(response.redirected && /login/i.test(response.url))throw Error('Sesi berakhir, silakan login ulang');
+   form.querySelector('input[name="panda_number"]').readOnly=true;
+   const edit=form.querySelector('button[onclick*="pfEditPanda"]');if(edit)edit.disabled=false;
+   status.textContent='✓ Tersimpan';setTimeout(()=>{status.textContent=''},2500);
+  }catch(err){save.disabled=false;status.textContent='Gagal: '+err.message}
+ });
+});
+let pfTikTokAllBusy=false;
+async function pfTikTokSend(devices){
+ if(pfTikTokAllBusy||!devices.length)return;
+ const status=document.getElementById('pfTikTokAllStatus');
+ pfTikTokAllBusy=true;
+ document.getElementById('pfTikTokAll').disabled=true;
+ document.getElementById('pfTikTokSelected').disabled=true;
+ let ok=0,fail=0;
+ for(let i=0;i<devices.length;i++){
+  const d=devices[i];status.textContent='Mengirim '+(i+1)+'/'+devices.length+' · HP '+d.panda_number;
+  try{
+   const fd=new FormData();fd.append('csrf_token',csrf);fd.append('gateway_id',d.gateway_id);fd.append('serial',d.serial);fd.append('action','OPEN_TIKTOK');
+   const r=await fetch('/phonefarm/command',{method:'POST',body:fd,headers:{'X-Requested-With':'XMLHttpRequest'}});
+   if(!r.ok)throw Error('HTTP '+r.status);
+   if((r.headers.get('content-type')||'').includes('application/json')){const data=await r.json();if(data.ok===false)throw Error(data.message||'Gagal')}
+   else if(r.redirected&&/login/i.test(r.url))throw Error('Sesi berakhir');
+   ok++;
+  }catch(e){fail++}
+ }
+ status.textContent='Perintah terkirim: '+ok+' · Gagal: '+fail+' (bukan konfirmasi login)';
+ pfTikTokAllBusy=false;
+ document.getElementById('pfTikTokAll').disabled=!pfTikTokRows().some(d=>d.email);
+ document.getElementById('pfTikTokSelected').disabled=!pfTikTokSelection.size;
+}
+function pfTikTokOpenAll(){return pfTikTokSend(pfTikTokRows().filter(d=>d.email))}
+function pfTikTokOpenSelected(){return pfTikTokSend(pfTikTokRows().filter(d=>d.email&&pfTikTokSelection.has(d.key)))}
+</script>
+</body></html>
