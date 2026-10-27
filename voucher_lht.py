@@ -195,7 +195,9 @@ def register_voucher_lht(app, db, current_user):
 
     @app.post('/voucher-lht/<int:voucher_id>/delete')
     def voucher_lht_delete(voucher_id):
-        allowed(); schema(); c = db()
+        u = allowed()
+        if u['role'] != 'superadmin': abort(403)
+        schema(); c = db()
         try:
             get_voucher(c, voucher_id)  # Checks owner or superadmin.
             c.execute('DELETE FROM lht_attachments WHERE voucher_id=?', (voucher_id,))
