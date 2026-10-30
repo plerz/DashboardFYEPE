@@ -1,0 +1,78 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Log Aktivitas Voucher PETTYCASH · DashFYEPE</title><style>
+:root{font-family:Arial,sans-serif;color:#173329;background:#f2f6f2}*{box-sizing:border-box}body{margin:0}.shell{display:flex;min-height:100vh}aside{width:245px;flex:0 0 245px;background:#062d21;color:white;padding:24px 16px;position:sticky;top:0;height:100vh;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#4b9177 #062d21}aside a{display:block;background:#135b40;padding:14px;border-radius:9px;color:white;text-decoration:none;margin:24px 0}main{flex:1;padding:26px;min-width:0}.top{display:flex;justify-content:space-between;align-items:center;gap:10px}button,.btn{border:0;background:#075c3d;color:white;border-radius:8px;padding:10px 15px;cursor:pointer;text-decoration:none;display:inline-block;font-weight:700}input,textarea,select{border:1px solid #cbd8ce;border-radius:8px;padding:10px;width:100%;font:inherit}label{font-size:13px;font-weight:700;display:block;margin-bottom:5px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.card{background:white;border-radius:15px;padding:20px;margin:16px 0;box-shadow:0 2px 12px #1232}.wide{grid-column:1/-1}.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:13px}td,th{padding:12px;border-bottom:1px solid #e3eae4;text-align:left}th{background:#e7f0e7}form.inline{display:flex;gap:6px;align-items:center;flex-wrap:wrap}form.inline input{width:auto;max-width:210px}small{color:#65776b}.flash{background:#e1f5e9;padding:12px;border-radius:8px}.stats{display:flex;gap:10px;flex-wrap:wrap}.stats .card{flex:1;min-width:180px} @media(max-width:760px){.shell{display:block}aside{width:100%;height:auto;max-height:45vh;position:relative;overflow-y:auto;padding:12px}main{padding:14px}.grid{grid-template-columns:1fr}}
+details{margin-top:8px}details form{margin:8px 0;padding:8px;background:#f5faf6;border-radius:8px}details input{margin:4px 0 8px}.editlink{cursor:pointer;color:#075c3d;font-weight:bold}.files{margin:8px 0;display:grid;gap:6px}.files>div{overflow-wrap:anywhere}.btn.secondary{background:#e4f1e8;color:#075c3d;font-size:11px;padding:6px}.danger{background:#b42318;margin-top:8px}td{vertical-align:top;min-width:130px}td:nth-child(5),td:nth-child(6){min-width:240px}td input[type=file]{max-width:225px;font-size:12px}td .btn{margin:3px}td form button{margin-top:5px}
+.rincian-row{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0;margin-top:4px}.rincian-row small{min-width:0;overflow-wrap:anywhere}.rincian-row details{margin:0;flex:none;position:relative}.rincian-row summary{list-style:none;cursor:pointer;padding:3px;color:#075c3d;font-size:16px}.rincian-row summary::-webkit-details-marker{display:none}.rincian-row details[open] form{position:relative;min-width:190px}.attachment-actions{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-top:5px}.attachment-actions .btn,.attachment-actions button{margin:0!important;padding:6px 9px!important;font-size:11px}.attachment-actions details{margin:0}.attachment-actions details form{margin:4px 0}.attachment-actions .danger{background:#fee4e2;color:#b42318}.download-stack{display:flex;flex-direction:column;gap:7px;min-width:125px}.download-stack .btn,.download-stack button{margin:0;width:100%;text-align:center;font-size:12px}.download-stack .danger{background:#b42318;color:#fff}.tablewrap th:first-child,.tablewrap td:first-child{min-width:35px;width:35px}.tablewrap td:nth-child(3){min-width:185px}
+
+/* Compact attachment layout */
+.tablewrap td:nth-child(6),.tablewrap td:nth-child(7){min-width:330px;max-width:390px}
+.upload-inline{display:flex;align-items:stretch;gap:0;flex-wrap:nowrap;margin:0 0 7px;max-width:100%}
+.upload-inline input[type=file]{min-width:0;flex:1;max-width:none;width:0;font-size:11px;border-radius:8px 0 0 8px;padding:8px 5px}
+.upload-inline button{flex:0 0 39px;width:39px;margin:0!important;padding:0!important;border-radius:0 8px 8px 0;font-size:20px;line-height:1}
+.files.compact{display:flex;flex-direction:column;gap:5px;margin:0}
+.file-entry{display:flex;align-items:center;gap:5px;min-width:0;max-width:100%}
+.file-name-scroll{flex:1;min-width:65px;white-space:nowrap;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;font-size:11px;color:#526d60;padding:5px 0}
+.file-name-scroll::-webkit-scrollbar{display:none}.file-name-scroll{cursor:ew-resize;overscroll-behavior-x:contain}.file-entry .btn,.file-entry button,.file-entry summary{font-size:11px!important;padding:5px 6px!important;margin:0!important;white-space:nowrap}
+.file-entry .attachment-actions{flex:none;flex-wrap:nowrap;margin:0;gap:3px}
+.file-entry details{position:relative;margin:0}
+.file-entry details[open] form{position:absolute;right:0;top:100%;z-index:10;background:white;box-shadow:0 3px 12px #0002;min-width:220px}
+.file-entry .danger{background:#fee4e2;color:#b42318}
+
+/* Mobile: horizontal voucher cards instead of a page-wide scroll. */
+@media(max-width:760px){
+ .top{align-items:flex-start;flex-direction:column}.top h1{font-size:24px}
+ .card{padding:14px}.stats .card{min-width:125px;margin:4px 0}
+ .tablewrap{overflow:visible}.tablewrap>table{display:block;width:100%}.tablewrap thead{display:none}
+ .tablewrap tbody{display:block}.tablewrap tbody>tr{display:block;border:1px solid #dbe8de;border-radius:12px;padding:8px;margin:12px 0;box-shadow:0 2px 7px #1231}
+ .tablewrap tbody>tr>td{display:block;width:100%;min-width:0!important;max-width:100%!important;padding:8px;border-bottom:1px solid #e5eee6;overflow-wrap:anywhere}
+ .tablewrap tbody>tr>td:nth-child(1):before{content:'No: ';font-weight:bold}
+ .tablewrap tbody>tr>td:nth-child(2):before{content:'Voucher: ';font-weight:bold}
+ .tablewrap tbody>tr>td:nth-child(3):before{content:'Pengaju & Rincian';font-weight:bold;display:block;margin-bottom:5px}
+ .tablewrap tbody>tr>td:nth-child(4):before{content:'Nominal: ';font-weight:bold}
+ .tablewrap tbody>tr>td:nth-child(5):before{content:'Status Transfer';font-weight:bold;display:block;margin-bottom:5px}
+ .tablewrap tbody>tr>td:nth-child(6):before{content:'Upload Bukti Transfer';font-weight:bold;display:block;margin-bottom:6px}
+ .tablewrap tbody>tr>td:nth-child(7):before{content:'Upload Struk / Kuitansi / Bukti Bayar';font-weight:bold;display:block;margin-bottom:6px}
+ .tablewrap tbody>tr>td:nth-child(8):before{content:'Download';font-weight:bold;display:block;margin-bottom:6px}
+ .upload-inline{width:100%}.file-entry{max-width:100%}.download-stack{min-width:0}
+ .audit-table tr>td:before{content:none!important}.audit-table thead{display:none}
+}
+
+/* Edit voucher opens as a floating panel, never squeezes the title into vertical text. */
+.rincian-row{position:relative;align-items:center;width:100%}
+.rincian-row>small{flex:1;min-width:0;overflow-wrap:break-word;word-break:normal}
+.rincian-row>details{position:static;flex:0 0 auto;margin:0}
+.rincian-row>details>summary{white-space:nowrap}
+.rincian-row .edit-popup{position:absolute;right:0;top:100%;z-index:100;width:min(380px,calc(100vw - 48px));max-height:65vh;overflow-y:auto;overflow-x:hidden;background:#fff;border:1px solid #cbd8ce;border-radius:12px;box-shadow:0 8px 26px #1234;padding:12px;}
+.rincian-row .edit-popup form{display:block;position:static!important;min-width:0!important;width:100%;margin:0 0 9px;padding:10px;background:#f5faf6;border-radius:8px}
+.rincian-row .edit-popup input{display:block;width:100%;min-width:0;max-width:100%;margin:5px 0 8px}
+.rincian-row .edit-popup button{max-width:100%;white-space:normal}
+@media(max-width:760px){.rincian-row .edit-popup{width:min(360px,calc(100vw - 68px));max-height:60vh}}
+
+
+/* Sidebar mandiri: kiri diam, hanya scroll bila menu melebihi layar. */
+@media (min-width:761px) {
+ html,body {overflow-x:hidden;overflow-y:auto;}
+ .shell {display:flex;align-items:stretch;min-height:100vh;height:auto;overflow:visible;}
+ .shell > aside {position:sticky!important;top:0!important;height:100vh!important;max-height:100vh!important;overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior-y:contain;flex:0 0 245px;align-self:flex-start;scrollbar-width:thin;}
+ .shell > main {height:auto!important;max-height:none!important;overflow:visible!important;min-width:0;flex:1;}
+}
+@media (max-width:760px) {
+ .shell > aside {position:relative!important;top:auto!important;height:auto!important;max-height:45vh!important;overflow-y:auto!important;}
+}
+.back-dashboard-link {display:block!important;background:transparent!important;margin:8px 0 18px!important;padding:5px 0!important;border-radius:0!important;color:#cde5d5!important;font-size:13px;font-weight:600;text-decoration:none;}
+.back-dashboard-link:hover {color:white!important;text-decoration:underline;}
+
+/* FINAL: sidebar fixed; only scroll when its actual content exceeds viewport. */
+@media (min-width:761px) {
+ html,body {overflow-x:hidden!important;overflow-y:auto!important;}
+ .shell {display:block!important;min-height:100vh!important;overflow:visible!important;}
+ .shell > aside {position:fixed!important;top:0!important;left:0!important;bottom:0!important;width:245px!important;height:100dvh!important;max-height:100dvh!important;overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior-y:contain;scrollbar-width:thin;z-index:50;padding:18px 16px!important;}
+ .shell > aside a {margin:7px 0!important;padding:11px 12px!important;}
+ .shell > aside h2 {margin:8px 0 12px!important;font-size:23px!important;}
+ .shell > aside .back-dashboard-link {margin:4px 0 14px!important;padding:3px 0!important;}
+ .shell > main {display:block!important;margin-left:245px!important;width:calc(100% - 245px)!important;max-height:none!important;height:auto!important;overflow:visible!important;}
+}
+</style></head><body><div class="shell"><aside><h2>REKAP VOUCHER</h2>{% if user.role == "superadmin" %}<a class="back-dashboard-link" href="/">← Back To Dashboard</a>{% endif %}
+{% for key,label,role in [('lht','Voucher LHT','harmoni'),('sbl','Voucher SBL','sbl'),('pettycash','Voucher Pettycash','pettycash'),('pdn','Voucher PDN','pdn'),('caprof','Voucher Caprof','caprof')] %}
+{% if user.role in ('superadmin','keuangan',role) %}<a href="/voucher-{{key}}" style="margin:9px 0">▤ {{label}}</a>{% endif %}{% endfor %}
+{% if user.role in ('superadmin','keuangan') %}<a href="/voucher-{{voucher_kind}}/riwayat-aktivitas" style="margin:9px 0">◷ Log Aktivitas {{voucher_kind|upper}}</a>{% endif %}
+<form action="/logout" method="post"><button type="submit">Logout</button></form></aside><main><div class="top"><div><h1>Log Aktivitas Voucher PETTYCASH</h1><small>Superadmin dan Keuangan · Data 30 hari terakhir · Waktu WIB · Login dan logout user PETTYCASH serta perubahan voucher</small></div><strong>{{user.full_name or user.username}} · {{user.role}}</strong></div><section class="card"><div class="tablewrap"><table class="audit-table"><thead><tr><th>Tanggal &amp; Jam (WIB)</th><th>User</th><th>Voucher</th><th>Aktivitas</th><th>Detail Perubahan</th></tr></thead><tbody>{% for a in activities %}<tr><td><small class="audit-time" data-iso="{{a.created_at}}">{{a.created_at}}</small></td><td>{{a.username}}</td><td>{{a.voucher_number or '—'}}</td><td><b>{{a.action}}</b></td><td>{{a.detail or '—'}}</td></tr>{% else %}<tr><td colspan="5">Belum ada aktivitas dalam 30 hari terakhir.</td></tr>{% endfor %}</tbody></table></div></section></main></div><script>document.querySelectorAll('.audit-time').forEach(el=>{try{const v=el.dataset.iso;const iso=/[zZ]|[+-]\d\d:\d\d$/.test(v)?v:v+'+07:00';el.textContent=new Intl.DateTimeFormat('id-ID',{timeZone:'Asia/Jakarta',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(new Date(iso));}catch(e){}});</script></body></html>
